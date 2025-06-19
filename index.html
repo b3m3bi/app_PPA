@@ -6,10 +6,46 @@
     <title>App PPA</title>
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="./script.js" type="module" defer></script>
+    <!-- <script src="./script.js" type="module" defer></script> -->
+     <script src="./app.js" type="module" defer></script>
 </head>
 <body>
-    <div class="container"></div>
+    <h2>Definiciones</h2>
+    <!-- <div class="definitions-form-container">
+        <div>
+            <label for="name">Nombre</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div>
+            <label for="short-name">Nombre corto</label>
+            <input type="text" id="short-name" name="short-name">
+        </div>
+        <div>
+            <label for="definition">Definición</label>
+            <textarea id="definition"></textarea>
+        </div>
+        <button id="add-btn">Agregar</button>
+    </div> -->
+
+    <div class="table-container">
+        <table id="definition-table">
+            <thead>
+                <tr>
+                    <th>Factor</th>
+                    <th>Código</th>
+                    <th>Definición</th>
+                    <th>Acción</th>
+                </tr>
+                <tbody>
+
+                </tbody>
+            </thead>
+        </table>
+    </div>
+
+
+    <!-- <div class="plot-01"></div>
+    <div class="plot-02"></div> -->
     
 </body>
 </html>

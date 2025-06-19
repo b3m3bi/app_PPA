@@ -169,9 +169,10 @@ let directPower = getDirectPower(influenceMatrix, true);
 
 
 
-//////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-let container = document.querySelector('.container');
+let container = document.querySelector('.plot-01');
+
 
 
 const width = 640;
