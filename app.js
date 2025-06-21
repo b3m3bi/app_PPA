@@ -1,8 +1,12 @@
-const definitionTable = document.querySelector('#definition-table');
+let nodeData = await fetch('./data/test_node_data.json').then(res => res.json());
+let linkData = await fetch('./data/test_link_data.json').then(res => res.json());
 
-let nodeData = await fetch("./test_node_data.json").then(res => res.json())
+////// Create definition table
 
-function renderTable(nodeData) {
+const definitionTable = document.querySelector('#definition-table tbody');
+
+
+function renderDefinitionTable(nodeData) {
     // Reset table
     definitionTable.innerHTML = '';
     // Add data
@@ -19,7 +23,7 @@ function addDefinitionToTable(definitionTable, factor, code, definition) {
     let deleteBtn = document.createElement('button');
     deleteBtn.addEventListener('click', () => {
         deleteDefinition(code);
-        renderTable(nodeData);
+        renderTables();
     });
     deleteBtn.textContent = 'Borrar';
     actionCell.append(deleteBtn);
@@ -50,8 +54,8 @@ function addDefinitionToNodeData(factor, code, definition){
 
 addBtn.addEventListener('click', () => {
     addDefinitionToNodeData(factorInput.value, codeInput.value, definitionInput.value);
-    renderTable(nodeData);
-     clearInputs();
+    renderTables();
+    clearInputs();
 })
 
 function clearInputs() {
@@ -78,20 +82,49 @@ function updateDefinition(code){
     node.factor = factorInput.value;
     node.code = codeInput.value;
     node.definition = definitionInput.value;
-    renderTable(nodeData);
+    renderTables();
 }
 
 let currentEditingCode = '';
-updateBtn.addEventListener('click', () => {
+    updateBtn.addEventListener('click', () => {
     updateDefinition(currentEditingCode);
     currentEditingCode = '';
     clearInputs();
 
 });
 
+///////// Create influence matrix
+
+const influenceMatrixTable = document.querySelector('#influence-matrix-table tbody');
 
 
-renderTable(nodeData);
+function renderInfluenceMatrixTable(nodeData){
+    // Put names at first row
+    influenceMatrixTable.innerHTML = '';
+    let firstRow = influenceMatrixTable.insertRow();
+    firstRow.innerHTML = '<th></th>';
+    for(let node of nodeData){
+        let th = document.createElement('th');
+        th.textContent = node.code;
+        firstRow.appendChild(th)
+    }
+
+    // Put names at first colum
+    for(let node of nodeData){
+        let row = influenceMatrixTable.insertRow();
+        row.innerHTML = `<th>${node.code}</th>`;
+        for(let i = 0; i < nodeData.length; i++){
+            let cell = row.insertCell();
+            cell.innerHTML = '<input type="number" class="matrix-cell" step="1" value="0">';
+            
+        }
+    }
+}
 
 
+function renderTables(){
+    renderDefinitionTable(nodeData);
+    renderInfluenceMatrixTable(nodeData);
+}
 
+renderTables();

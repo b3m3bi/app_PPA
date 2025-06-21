@@ -1,0 +1,322 @@
+[
+  {
+    "source": "1- am esp",
+    "target": "6- mob",
+    "weight": 1
+  },
+  {
+    "source": "1- am esp",
+    "target": "15- état env",
+    "weight": 1
+  },
+  {
+    "source": "2- offre serv",
+    "target": "1- am esp",
+    "weight": 1
+  },
+  {
+    "source": "3- offre agric",
+    "target": "15- état env",
+    "weight": 1
+  },
+  {
+    "source": "4- of alim priv",
+    "target": "5- of alim coll",
+    "weight": 1
+  },
+  {
+    "source": "4- of alim priv",
+    "target": "7- dem prod alim",
+    "weight": 1
+  },
+  {
+    "source": "4- of alim priv",
+    "target": "20- interac",
+    "weight": 1
+  },
+  {
+    "source": "4- of alim priv",
+    "target": "22- pol al",
+    "weight": 1
+  },
+  {
+    "source": "5- of alim coll",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "5- of alim coll",
+    "target": "11- santé",
+    "weight": 1
+  },
+  {
+    "source": "6- mob",
+    "target": "14-tps repas",
+    "weight": 1
+  },
+  {
+    "source": "7- dem prod alim",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "7- dem prod alim",
+    "target": "11- santé",
+    "weight": 1
+  },
+  {
+    "source": "7- dem prod alim",
+    "target": "12- budget",
+    "weight": 1
+  },
+  {
+    "source": "7- dem prod alim",
+    "target": "20- interac",
+    "weight": 1
+  },
+  {
+    "source": "7- dem prod alim",
+    "target": "22- pol al",
+    "weight": 1
+  },
+  {
+    "source": "8- dem vol",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "8- dem vol",
+    "target": "5- of alim coll",
+    "weight": 1
+  },
+  {
+    "source": "8- dem vol",
+    "target": "6- mob",
+    "weight": 1
+  },
+  {
+    "source": "9- CSP",
+    "target": "7- dem prod alim",
+    "weight": 1
+  },
+  {
+    "source": "11- santé",
+    "target": "22- pol al",
+    "weight": 1
+  },
+  {
+    "source": "12- budget",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "12- budget",
+    "target": "5- of alim coll",
+    "weight": 1
+  },
+  {
+    "source": "12- budget",
+    "target": "7- dem prod alim",
+    "weight": 1
+  },
+  {
+    "source": "12- budget",
+    "target": "8- dem vol",
+    "weight": 1
+  },
+  {
+    "source": "12- budget",
+    "target": "11- santé",
+    "weight": 1
+  },
+  {
+    "source": "13- déchets",
+    "target": "1- am esp",
+    "weight": 1
+  },
+  {
+    "source": "13- déchets",
+    "target": "15- état env",
+    "weight": 1
+  },
+  {
+    "source": "14-tps repas",
+    "target": "11- santé",
+    "weight": 1
+  },
+  {
+    "source": "15- état env",
+    "target": "3- offre agric",
+    "weight": 1
+  },
+  {
+    "source": "15- état env",
+    "target": "11- santé",
+    "weight": 1
+  },
+  {
+    "source": "15- état env",
+    "target": "14-tps repas",
+    "weight": 1
+  },
+  {
+    "source": "16- transf et stock",
+    "target": "1- am esp",
+    "weight": 1
+  },
+  {
+    "source": "16- transf et stock",
+    "target": "8- dem vol",
+    "weight": 1
+  },
+  {
+    "source": "16- transf et stock",
+    "target": "9- CSP",
+    "weight": 1
+  },
+  {
+    "source": "17- NRJ",
+    "target": "2- offre serv",
+    "weight": 1
+  },
+  {
+    "source": "17- NRJ",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "17- NRJ",
+    "target": "16- transf et stock",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "1- am esp",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "2- offre serv",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "3- offre agric",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "5- of alim coll",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "6- mob",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "13- déchets",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "17- NRJ",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "19- strat",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "20- interac",
+    "weight": 1
+  },
+  {
+    "source": "18- gouv",
+    "target": "22- pol al",
+    "weight": 1
+  },
+  {
+    "source": "19- strat",
+    "target": "9- CSP",
+    "weight": 1
+  },
+  {
+    "source": "19- strat",
+    "target": "10- âge",
+    "weight": 1
+  },
+  {
+    "source": "20- interac",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "20- interac",
+    "target": "22- pol al",
+    "weight": 1
+  },
+  {
+    "source": "21- act coll",
+    "target": "18- gouv",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "1- am esp",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "4- of alim priv",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "5- of alim coll",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "11- santé",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "12- budget",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "13- déchets",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "16- transf et stock",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "18- gouv",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "20- interac",
+    "weight": 1
+  },
+  {
+    "source": "22- pol al",
+    "target": "21- act coll",
+    "weight": 1
+  }
+]
