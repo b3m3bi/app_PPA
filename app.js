@@ -97,8 +97,10 @@ let currentEditingCode = '';
 
 const influenceMatrixTable = document.querySelector('#influence-matrix-table tbody');
 
+function renderInfluenceMatrixTable(linkData){
 
-function renderInfluenceMatrixTable(nodeData){
+    let adjMatrix = getAdjMatrix(linkData, nodeData);
+
     // Put names at first row
     influenceMatrixTable.innerHTML = '';
     let firstRow = influenceMatrixTable.insertRow();
@@ -109,22 +111,83 @@ function renderInfluenceMatrixTable(nodeData){
         firstRow.appendChild(th)
     }
 
-    // Put names at first colum
-    for(let node of nodeData){
+ 
+    for(let i = 0; i < nodeData.length; i++){
         let row = influenceMatrixTable.insertRow();
-        row.innerHTML = `<th>${node.code}</th>`;
-        for(let i = 0; i < nodeData.length; i++){
+        // put names at first column
+        row.innerHTML = `<th>${nodeData[i].code}</th>`;
+        for(let j = 0; j < nodeData.length; j++){
             let cell = row.insertCell();
-            cell.innerHTML = '<input type="number" class="matrix-cell" step="1" value="0">';
-            
+            // create input and fill with adjacency matrix value
+            let input = document.createElement('input');
+            input.setAttribute('type', 'number')
+            input.setAttribute('class', 'matrix-cell');
+            input.setAttribute('value', adjMatrix[i][j]);
+            input.dataset.source = nodeData[i].code;
+            input.dataset.target = nodeData[j].code; 
+            input.addEventListener('change', (event) => {
+                let inputElement = event.target;
+                let link = linkData.find(link => 
+                    link.source === inputElement.dataset.source && link.target === inputElement.dataset.target
+                )
+                if (link){
+                    if (inputElement.value === '0'){
+                        linkData.splice(linkData.findIndex(l => l === link), 1)
+                        console.log('existe el link, se borra')
+                    } else {
+                        link.weight = inputElement.value;
+                        console.log('existe el link, se modifica');
+                    }
+                } else {
+                    let newLink = {
+                        source: inputElement.dataset.source,
+                        target: inputElement.dataset.target,
+                        weight: inputElement.value
+                    }
+                    linkData.push(newLink);
+                    console.log('nuevo link')
+                }
+                console.log(linkData);
+            })
+            cell.appendChild(input);
         }
+        
     }
 }
 
 
+function getZeroFilledMatrix(rows, cols){
+    let matrix = [];
+    for(let i = 0; i < rows; i++){
+        matrix[i] = new Array(cols).fill(0);
+    }
+    return matrix;
+}
+
+function getIndexInNodeData(code, nodeData){
+    return nodeData.map(node => node.code).indexOf(code);
+}
+
+
+let testNodeData = [{code: "A"}, {code: "B"}, {code: "C"}]
+let testLinkData = [{source: "A", target: "B", weight: 1}, {source: "C", target: "A", weight: 1}]
+
+
+function getAdjMatrix(linkData, nodeData){
+
+    let adjMatrix = getZeroFilledMatrix(nodeData.length, nodeData.length);
+
+    for(let link of linkData){
+        let sourceIndex = getIndexInNodeData(link.source, nodeData);
+        let targetIndex = getIndexInNodeData(link.target, nodeData);
+        adjMatrix[sourceIndex][targetIndex] = link.weight;
+    }
+    return adjMatrix;
+}
+
 function renderTables(){
     renderDefinitionTable(nodeData);
-    renderInfluenceMatrixTable(nodeData);
+    renderInfluenceMatrixTable(linkData);
 }
 
 renderTables();
