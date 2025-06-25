@@ -5,7 +5,6 @@ let linkData = await fetch('./data/test_link_data.json').then(res => res.json())
 
 const definitionTable = document.querySelector('#definition-table tbody');
 
-
 function renderDefinitionTable(nodeData) {
     // Reset table
     definitionTable.innerHTML = '';
@@ -23,6 +22,7 @@ function addDefinitionToTable(definitionTable, factor, code, definition) {
     let deleteBtn = document.createElement('button');
     deleteBtn.addEventListener('click', () => {
         deleteDefinition(code);
+        deleteLinksUsingCode(code);
         renderTables();
     });
     deleteBtn.textContent = 'Borrar';
@@ -67,6 +67,12 @@ function clearInputs() {
 function deleteDefinition(code){
     let index = nodeData.findIndex(node => node.code === code);
     nodeData.splice(index, 1);
+}
+
+function deleteLinksUsingCode(code){
+    let linksUsingCode = linkData.filter(link => link.source === code || link.target === code);
+    console.log(linksUsingCode);
+    linksUsingCode.forEach(link => linkData.splice(linkData.findIndex(l => l === link), 1));
 }
 
 function editDefinition(code){
