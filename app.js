@@ -24,7 +24,7 @@ function addDefinitionToTable(definitionTable, factor, code, definition) {
         deleteDefinition(code);
         deleteLinksUsingCode(code);
         renderTables();
-        plotDirectInfluence();
+        renderPlots();
     });
     deleteBtn.textContent = 'Borrar';
     actionCell.append(deleteBtn);
@@ -172,11 +172,6 @@ function getIndexInNodeData(code, nodeData){
     return nodeData.map(node => node.code).indexOf(code);
 }
 
-
-let testNodeData = [{code: "A"}, {code: "B"}, {code: "C"}]
-let testLinkData = [{source: "A", target: "B", weight: 1}, {source: "C", target: "A", weight: 1}]
-
-
 function getAdjMatrix(linkData, nodeData){
 
     let adjMatrix = getZeroFilledMatrix(nodeData.length, nodeData.length);
@@ -193,12 +188,7 @@ function renderTables(){
     renderInfluenceMatrixTable(linkData);
 }
 
-renderTables();
-
-
 ///// Plots
-
-
 function sumMatrixRows(mat){
     let rowSums = [];
     for(let row of mat){
@@ -218,21 +208,49 @@ function sumMatrixColumns(mat){
     return colSums;
 }
 
-function getDirectInfluenceWeighted(influenceMatrix){
-    const directInfluence = sumMatrixRows(influenceMatrix);
-    let directInfluenceSum = directInfluence.reduce((sum, val) => sum += val, 0);
-    let numberOfNonZeroDirectInfluenceForces = directInfluence.filter(val => val > 0).length;
-    return directInfluence.map(val => val / (directInfluenceSum / numberOfNonZeroDirectInfluenceForces));
+function matrixMultiplication(A, B){
+    let rowsA = A.length;
+    let colsA = A[0].length;
+    let rowsB = B.length;
+    let colsB = B[0].length;
+
+    if (colsA !== rowsB){
+        console.error("Matrices need to be of size n x m and m x p.");
+        return;
+    }
+
+    let rows = rowsA;
+    let cols = colsB;
+
+    let C = getZeroFilledMatrix(rows, cols);
+
+    for(let i = 0; i < rows; i++){
+        for (let j = 0; j < cols; j++){
+            let sum = 0;
+            for (let k = 0; k < colsA; k++){
+                sum += A[i][k] * B[k][j];
+            }
+            C[i][j] = sum;
+        }
+    }
+    return C;
 }
 
-function getDirectDependanceWeighted(influenceMatrix){
-    const directDependance = sumMatrixColumns(influenceMatrix);
-    let directDependanceSum = directDependance.reduce((sum, val) => sum += val, 0);
-    let numberOfNonZeroDirectDependanceForces = directDependance.filter(val => val > 0).length;
-    return directDependance.map(val => val / (directDependanceSum / numberOfNonZeroDirectDependanceForces));
+function getInfluenceWeighted(influenceMatrix){
+    const influence = sumMatrixRows(influenceMatrix);
+    let influenceSum = influence.reduce((sum, val) => sum += val, 0);
+    let numberOfNonZeroInfluenceForces = influence.filter(val => val > 0).length;
+    return influence.map(val => val / (influenceSum / numberOfNonZeroInfluenceForces));
 }
 
-function plotDirectInfluence() {
+function getDependanceWeighted(influenceMatrix){
+    const dependance = sumMatrixColumns(influenceMatrix);
+    let dependanceSum = dependance.reduce((sum, val) => sum += val, 0);
+    let numberOfNonZeroDependanceForces = dependance.filter(val => val > 0).length;
+    return dependance.map(val => val / (dependanceSum / numberOfNonZeroDependanceForces));
+}
+
+function plotInfluence(typeOfForces, containerId) {
     // calculate forces
 
     const influenceMatrix = getAdjMatrix(linkData, nodeData);
@@ -240,20 +258,38 @@ function plotDirectInfluence() {
     let forcesNames = nodeData.map(node => node.code);
 
     let forces = [];
-    let directInfluenceWeighted = getDirectInfluenceWeighted(influenceMatrix);
-    let directDependanceWeighted = getDirectDependanceWeighted(influenceMatrix);
+
+    let influence;
+    let dependance;
+
+    switch (typeOfForces) {
+        case 'direct':
+            influence = getInfluenceWeighted(influenceMatrix);
+            dependance = getDependanceWeighted(influenceMatrix);
+            break;
+        case 'indirect':
+            let sqrInfluenceMatrix = matrixMultiplication(influenceMatrix, influenceMatrix);
+            influence = getInfluenceWeighted(sqrInfluenceMatrix);
+            dependance = getDependanceWeighted(sqrInfluenceMatrix);
+    }
 
     for (let i = 0; i < influenceMatrix.length; i++){
         let force = new Object();
-        force.x = directDependanceWeighted[i];
-        force.y = directInfluenceWeighted[i];
+        force.x = dependance[i];
+        force.y = influence[i];
         force.name = forcesNames[i];
         forces.push(force)
     }
+ 
+    let plotContainer = document.querySelector(containerId);
 
+    plotForces(forces, plotContainer)
+
+}
+
+function plotForces(forces, plotContainer) {
     // plot
-    let container = document.querySelector('.plot-direct-influence');
-    container.innerHTML = '';
+    plotContainer.innerHTML = '';
 
     const width = 640;
     const height = 400;
@@ -311,8 +347,15 @@ function plotDirectInfluence() {
         .attr('y', d => y(d.y))
         .text(d => d.name);
 
-    container.append(svg.node());
+    plotContainer.append(svg.node());
 
 }
 
-plotDirectInfluence();
+function renderPlots() {
+    plotInfluence('direct', '.plot-direct-influence');
+    plotInfluence('indirect', '.plot-indirect-influence');
+
+}
+
+renderTables();
+renderPlots();
