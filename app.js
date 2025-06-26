@@ -24,6 +24,7 @@ function addDefinitionToTable(definitionTable, factor, code, definition) {
         deleteDefinition(code);
         deleteLinksUsingCode(code);
         renderTables();
+        plotDirectInfluence();
     });
     deleteBtn.textContent = 'Borrar';
     actionCell.append(deleteBtn);
@@ -71,7 +72,6 @@ function deleteDefinition(code){
 
 function deleteLinksUsingCode(code){
     let linksUsingCode = linkData.filter(link => link.source === code || link.target === code);
-    console.log(linksUsingCode);
     linksUsingCode.forEach(link => linkData.splice(linkData.findIndex(l => l === link), 1));
 }
 
@@ -138,22 +138,20 @@ function renderInfluenceMatrixTable(linkData){
                 )
                 if (link){
                     if (inputElement.value === '0'){
+                        // if no weight remove link
                         linkData.splice(linkData.findIndex(l => l === link), 1)
-                        console.log('existe el link, se borra')
                     } else {
-                        link.weight = inputElement.value;
-                        console.log('existe el link, se modifica');
+                        link.weight = parseInt(inputElement.value);
                     }
                 } else {
                     let newLink = {
                         source: inputElement.dataset.source,
                         target: inputElement.dataset.target,
-                        weight: inputElement.value
+                        weight: parseInt(inputElement.value)
                     }
                     linkData.push(newLink);
-                    console.log('nuevo link')
                 }
-                console.log(linkData);
+                plotDirectInfluence();
             })
             cell.appendChild(input);
         }
@@ -182,7 +180,6 @@ let testLinkData = [{source: "A", target: "B", weight: 1}, {source: "C", target:
 function getAdjMatrix(linkData, nodeData){
 
     let adjMatrix = getZeroFilledMatrix(nodeData.length, nodeData.length);
-
     for(let link of linkData){
         let sourceIndex = getIndexInNodeData(link.source, nodeData);
         let targetIndex = getIndexInNodeData(link.target, nodeData);
@@ -197,3 +194,125 @@ function renderTables(){
 }
 
 renderTables();
+
+
+///// Plots
+
+
+function sumMatrixRows(mat){
+    let rowSums = [];
+    for(let row of mat){
+        rowSums.push(row.reduce((sum, val) => sum += val, 0));
+    }
+    return rowSums;
+}
+
+function sumMatrixColumns(mat){
+    let colSums = Array(mat.length)
+    colSums.fill(0, 0, mat.length);
+    for(let row of mat){
+        for(let i = 0; i < row.length; i++){
+            colSums[i] += row[i];
+        }
+    }
+    return colSums;
+}
+
+function getDirectInfluenceWeighted(influenceMatrix){
+    const directInfluence = sumMatrixRows(influenceMatrix);
+    let directInfluenceSum = directInfluence.reduce((sum, val) => sum += val, 0);
+    let numberOfNonZeroDirectInfluenceForces = directInfluence.filter(val => val > 0).length;
+    return directInfluence.map(val => val / (directInfluenceSum / numberOfNonZeroDirectInfluenceForces));
+}
+
+function getDirectDependanceWeighted(influenceMatrix){
+    const directDependance = sumMatrixColumns(influenceMatrix);
+    let directDependanceSum = directDependance.reduce((sum, val) => sum += val, 0);
+    let numberOfNonZeroDirectDependanceForces = directDependance.filter(val => val > 0).length;
+    return directDependance.map(val => val / (directDependanceSum / numberOfNonZeroDirectDependanceForces));
+}
+
+function plotDirectInfluence() {
+    // calculate forces
+
+    const influenceMatrix = getAdjMatrix(linkData, nodeData);
+
+    let forcesNames = nodeData.map(node => node.code);
+
+    let forces = [];
+    let directInfluenceWeighted = getDirectInfluenceWeighted(influenceMatrix);
+    let directDependanceWeighted = getDirectDependanceWeighted(influenceMatrix);
+
+    for (let i = 0; i < influenceMatrix.length; i++){
+        let force = new Object();
+        force.x = directDependanceWeighted[i];
+        force.y = directInfluenceWeighted[i];
+        force.name = forcesNames[i];
+        forces.push(force)
+    }
+
+    // plot
+    let container = document.querySelector('.plot-direct-influence');
+    container.innerHTML = '';
+
+    const width = 640;
+    const height = 400;
+    const marginTop = 20;
+    const marginRight = 20;
+    const marginBottom = 30;
+    const marginLeft = 40;
+
+    const x = d3.scaleLinear().domain(d3.extent(forces, d => d.x)).nice().range([marginLeft, width - marginRight]);
+
+    const y = d3.scaleLinear().domain(d3.extent(forces, d => d.y)).nice().range([height - marginBottom, marginTop]);
+
+    const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
+        .attr('style', 'max-width: 1000px; height: auto; font: 10px sans-serif;');
+
+    svg.append('g').attr('transform', `translate(0,${height - marginBottom})`)
+        .call(d3.axisBottom(x))
+        .call(g => g.append('text')
+            .attr('x', width)
+            .attr('y', marginBottom - 4)
+            .attr('fill', 'currentColor')
+            .attr('text-anchor', 'end')
+            .text('Dependance →')
+        );
+
+    svg.append('g').attr('transform', `translate(${marginLeft}, 0)`)
+        .call(d3.axisLeft(y))
+        .call(g => g.append('text')
+            .attr('x', -marginLeft)
+            .attr('y', 10)
+            .attr('fill', 'currentColor')
+            .attr('text-anchor', 'start')
+            .text('↑ Influence')
+        );
+
+    svg.append('g')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 1.5)
+        .attr('fill', 'none')
+        .selectAll('circle')
+        .data(forces)
+        .join('circle')
+        .attr('cx', d => x(d.x))
+        .attr('cy', d => y(d.y))
+        .attr('r', 2);
+
+    svg.append('g')
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', 10)
+        .selectAll('text')
+        .data(forces)
+        .join('text')
+        .attr('dy', '0.35em')
+        .attr('x', d => x(d.x) + 7)
+        .attr('y', d => y(d.y))
+        .text(d => d.name);
+
+    container.append(svg.node());
+
+}
+
+plotDirectInfluence();

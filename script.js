@@ -173,8 +173,6 @@ let directPower = getDirectPower(influenceMatrix, true);
 
 let container = document.querySelector('.plot-01');
 
-
-
 const width = 640;
 const height = 400;
 const marginTop = 20;

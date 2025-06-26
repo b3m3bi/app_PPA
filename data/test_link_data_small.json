@@ -1,0 +1,18 @@
+[
+    {
+        "source": "A",
+        "target": "B",
+        "weight": 1
+    },
+    {
+        "source": "A",
+        "target": "C",
+        "weight": 1
+    },
+    {
+        "source": "C",
+        "target": "A",
+        "weight": 1
+    }
+
+]
