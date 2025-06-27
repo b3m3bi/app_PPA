@@ -129,6 +129,8 @@ function renderInfluenceMatrixTable(linkData){
             input.setAttribute('type', 'number')
             input.setAttribute('class', 'matrix-cell');
             input.setAttribute('value', adjMatrix[i][j]);
+            input.setAttribute('min', '0');
+            input.setAttribute('max', '100');
             input.dataset.source = nodeData[i].code;
             input.dataset.target = nodeData[j].code; 
             input.addEventListener('change', (event) => {
@@ -153,6 +155,9 @@ function renderInfluenceMatrixTable(linkData){
                 }
                 renderPlots();
             })
+            if (i === j) {
+                input.setAttribute('disabled', 'disabled')
+            }
             cell.appendChild(input);
         }
         
