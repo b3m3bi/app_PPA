@@ -151,7 +151,7 @@ function renderInfluenceMatrixTable(linkData){
                     }
                     linkData.push(newLink);
                 }
-                plotDirectInfluence();
+                renderPlots();
             })
             cell.appendChild(input);
         }
@@ -236,6 +236,18 @@ function matrixMultiplication(A, B){
     return C;
 }
 
+function matrixSum(A, B){
+    let rows = A.length;
+    let cols = A[0].length;
+    let C = getZeroFilledMatrix(rows, cols);
+    for(let i = 0; i < rows; i++){
+        for(let j = 0; j < cols; j++){
+            C[i][j] = A[i][j] + B[i][j];
+        }
+    }
+    return C;
+}
+
 function getInfluenceWeighted(influenceMatrix){
     const influence = sumMatrixRows(influenceMatrix);
     let influenceSum = influence.reduce((sum, val) => sum += val, 0);
@@ -261,6 +273,7 @@ function plotInfluence(typeOfForces, containerId) {
 
     let influence;
     let dependance;
+    let sqrInfluenceMatrix;
 
     switch (typeOfForces) {
         case 'direct':
@@ -268,9 +281,19 @@ function plotInfluence(typeOfForces, containerId) {
             dependance = getDependanceWeighted(influenceMatrix);
             break;
         case 'indirect':
-            let sqrInfluenceMatrix = matrixMultiplication(influenceMatrix, influenceMatrix);
+            sqrInfluenceMatrix = matrixMultiplication(influenceMatrix, influenceMatrix);
             influence = getInfluenceWeighted(sqrInfluenceMatrix);
             dependance = getDependanceWeighted(sqrInfluenceMatrix);
+            break;
+        case 'total':
+            sqrInfluenceMatrix = matrixMultiplication(influenceMatrix, influenceMatrix);
+            let totalInfluenceMatrix = matrixSum(influenceMatrix, sqrInfluenceMatrix);
+            influence = getInfluenceWeighted(totalInfluenceMatrix);
+            dependance = getDependanceWeighted(totalInfluenceMatrix);
+            console.log(influenceMatrix);
+            console.log(sqrInfluenceMatrix);
+            console.log(totalInfluenceMatrix);
+            break;
     }
 
     for (let i = 0; i < influenceMatrix.length; i++){
@@ -354,6 +377,7 @@ function plotForces(forces, plotContainer) {
 function renderPlots() {
     plotInfluence('direct', '.plot-direct-influence');
     plotInfluence('indirect', '.plot-indirect-influence');
+    plotInfluence('total', '.plot-total-influence');
 
 }
 
