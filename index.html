@@ -5,62 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App PPA</title>
 
+    <link rel="stylesheet" href="./styles/normalize.css">
+    <link rel="stylesheet" href="./styles/style.css">
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <!-- <script src="./script.js" type="module" defer></script> -->
-     <script src="./app.js" type="module" defer></script>
+    <script src="./app.js" type="module" defer></script>
 </head>
 <body>
-    <h2>Definiciones</h2>
-    <div class="definitions-form-container">
-        <div>
-            <label for="factor">Factor</label>
-            <input type="text" id="factor" name="factor">
+    <input type="radio" id="tab1" name="tabselect">
+    <input type="radio" id="tab2" name="tabselect">
+    <input type="radio" id="tab3" name="tabselect">
+    <nav>
+        <ul>
+            <li class="tab1"><label for="tab1">Definiciones</label></li>
+            <li class="tab2"><label for="tab2">Influencias</label></li>
+            <li class="tab3"><label for="tab3">Análisis</label></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="tab1">
+            <h2>Definiciones</h2>
+            <div class="definitions-form-container">
+                <div>
+                    <label for="factor">Factor</label>
+                    <input type="text" id="factor" name="factor">
+                </div>
+                <div>
+                    <label for="code">Código</label>
+                    <input type="text" id="code" name="code">
+                </div>
+                <div>
+                    <label for="definition">Definición</label>
+                    <textarea id="definition"></textarea>
+                </div>
+                <button id="add-btn">Agregar</button>
+                <button id="update-btn">Actualizar</button>
+            </div>
+
+            <div class="table-container">
+                <table id="definition-table">
+                    <thead>
+                        <tr>
+                            <th>Factor</th>
+                            <th>Código</th>
+                            <th>Definición</th>
+                            <th>Acción</th>
+                        </tr>
+                        <tbody></tbody>
+                    </thead>
+                </table>
+            </div>
         </div>
-        <div>
-            <label for="code">Código</label>
-            <input type="text" id="code" name="code">
+
+        <div class="tab2">
+            <h2 id="influencias">Matriz de influencias</h2>
+        
+            <div id="table-container">
+                <table id="influence-matrix-table">
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-        <div>
-            <label for="definition">Definición</label>
-            <textarea id="definition"></textarea>
+
+        <div class="tab3">
+            <h2>Gráficas</h2>
+            <h3>Influencias directas</h3>
+            <div class="plot-direct-influence"></div>
+        
+            <h3>Influencias indirectas</h3>
+            <div class="plot-indirect-influence"></div>
+        
+            <h3>Influencias totales</h3>
+            <div class="plot-total-influence"></div>
         </div>
-        <button id="add-btn">Agregar</button>
-        <button id="update-btn">Actualizar</button>
-    </div>
-
-    <div class="table-container">
-        <table id="definition-table">
-            <thead>
-                <tr>
-                    <th>Factor</th>
-                    <th>Código</th>
-                    <th>Definición</th>
-                    <th>Acción</th>
-                </tr>
-                <tbody></tbody>
-            </thead>
-        </table>
-    </div>
-
-    <h2>Matriz de influencias</h2>
-
-    <div id="table-container">
-        <table id="influence-matrix-table">
-            <tbody></tbody>
-        </table>
-    </div>
-
-
-    <h2>Gráficas</h2>
-    <h3>Influencias directas</h3>
-    <div class="plot-direct-influence"></div>
-
-    <h3>Influencias indirectas</h3>
-    <div class="plot-indirect-influence"></div>
-
-    <h3>Influencias totales</h3>
-    <div class="plot-total-influence"></div>
-    
+    </main>
     
 </body>
 </html>

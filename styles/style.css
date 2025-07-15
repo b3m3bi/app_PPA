@@ -1,0 +1,86 @@
+:root {
+    font-family: "Helvetica", "Arial", sans-serif;
+
+    --col-light-main: #ffffff;
+    --col-light-second: #d3d3d3;
+    --col-light-third: #adadad;
+    --col-dark-main: #252422;
+    --col-dark-second: #403D39;
+    --col-highlit-main: #EB5E28;
+}
+
+body {
+    background-color: var(--col-light-main);
+    color: var(--col-dark-main)
+}
+
+input[name="tabselect"]{
+    display: none;
+}
+
+main > div {
+    display: none;
+}
+
+#tab1:checked ~ main .tab1,
+#tab2:checked ~ main .tab2,
+#tab3:checked ~ main .tab3 {
+    display: block;
+}
+
+#tab1:checked ~ nav>ul>li>label[for='tab1'],
+#tab2:checked ~ nav>ul>li>label[for='tab2'],
+#tab3:checked ~ nav>ul>li>label[for='tab3'] {
+    background-color: var(--col-light-main);
+    color: var(--col-dark-main)
+}
+
+nav>ul>li {
+    list-style: none;
+    display: block;
+    text-align: center;
+}
+
+nav>ul>li>label {
+    display: block;
+    width: 120px;
+    padding: 8px;
+    background-color: var(--col-light-second);
+    border: 1px solid var(--col-light-main);
+    color: var(--col-light-third)
+}
+
+nav > ul > li > label:hover {
+    /* background-color: var(--col-light-second); */
+    color: var(--col-dark-second);
+    cursor: pointer;
+
+
+}
+
+nav ul li:first-child > label {
+    border-radius: 8px 0 0 8px;
+}
+
+nav ul li:last-child > label {
+    border-radius: 0 8px 8px 0;
+}
+
+nav ul {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border-top: 1px solid rgb(218, 218, 218);
+}
+
+

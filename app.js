@@ -295,9 +295,6 @@ function plotInfluence(typeOfForces, containerId) {
             let totalInfluenceMatrix = matrixSum(influenceMatrix, sqrInfluenceMatrix);
             influence = getInfluenceWeighted(totalInfluenceMatrix);
             dependance = getDependanceWeighted(totalInfluenceMatrix);
-            console.log(influenceMatrix);
-            console.log(sqrInfluenceMatrix);
-            console.log(totalInfluenceMatrix);
             break;
     }
 
