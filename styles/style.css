@@ -1,12 +1,13 @@
 :root {
-    font-family: "Helvetica", "Arial", sans-serif;
+    font-family: 'Inter', sans-serif;
 
     --col-light-main: #ffffff;
     --col-light-second: #d3d3d3;
     --col-light-third: #adadad;
     --col-dark-main: #252422;
     --col-dark-second: #403D39;
-    --col-highlit-main: #EB5E28;
+    --col-highlight-main: #EB5E28;
+    --col-highlight-second: #eb5f2836;
 }
 
 body {
@@ -31,8 +32,8 @@ main > div {
 #tab1:checked ~ nav>ul>li>label[for='tab1'],
 #tab2:checked ~ nav>ul>li>label[for='tab2'],
 #tab3:checked ~ nav>ul>li>label[for='tab3'] {
-    background-color: var(--col-light-main);
-    color: var(--col-dark-main)
+    color: var(--col-highlight-main);
+    border-bottom: 1px solid var(--col-highlight-main); 
 }
 
 nav>ul>li {
@@ -43,27 +44,15 @@ nav>ul>li {
 
 nav>ul>li>label {
     display: block;
-    width: 120px;
+    width: 96px;
     padding: 8px;
-    background-color: var(--col-light-second);
-    border: 1px solid var(--col-light-main);
+    border-bottom: 1px solid var(--col-light-third);
     color: var(--col-light-third)
 }
 
-nav > ul > li > label:hover {
-    /* background-color: var(--col-light-second); */
-    color: var(--col-dark-second);
+nav>ul>li>label:hover {
     cursor: pointer;
-
-
-}
-
-nav ul li:first-child > label {
-    border-radius: 8px 0 0 8px;
-}
-
-nav ul li:last-child > label {
-    border-radius: 0 8px 8px 0;
+    background-color: var(--col-highlight-second);
 }
 
 nav ul {
@@ -71,6 +60,7 @@ nav ul {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    gap: 8px;
 }
 
 
@@ -83,4 +73,49 @@ td {
     border-top: 1px solid rgb(218, 218, 218);
 }
 
+
+main {
+    padding: 16px;
+}
+
+@media (max-width: 430px) {
+    #definition-table thead{
+        display: none;
+    }
+
+    #definition-table tr>td:nth-child(1):before{
+        content: "Factor";
+    }
+
+    #definition-table tr>td:nth-child(2):before{
+        content: "Código";
+    }
+
+    #definition-table tr>td:nth-child(3):before{
+        content: "Definición";
+    }
+
+    #definition-table td{
+        display: block;
+        border: none;
+        padding-left: 30%;
+        padding-bottom: 8px;
+    }
+
+    #definition-table tr>td::before{
+        position: absolute;
+        left: 24px;
+        font-weight: bold;
+
+    }
+
+    #definition-table tr {
+        display: block;
+        margin-top: 16px;
+        border: 1px solid var(--col-light-third);
+        border-radius: 8px;
+        padding: 8px;
+    }
+
+}
 
