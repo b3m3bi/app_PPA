@@ -1,112 +1,112 @@
 [
   {
     "factor": "Aménagement espace",
-    "code": "1- am esp",
+    "code": "am esp",
     "definition": "allocation et usage des parcelles entre zones de production, de restauration, marchés, autres bâtis, etc."
   },
   {
     "factor": "Services hors alimentation",
-    "code": "2- offre serv",
+    "code": "offre serv",
     "definition": "Quantité et nature de l'offre  de services hors alimentation (garderie, salles et espaces de sport, spectacles, etc.)"
   },
   {
     "factor": "Offre agricole",
-    "code": "3- offre agric",
+    "code": "offre agric",
     "definition": "Diversité et qualité de l'offre agricole locale (foncier, systèmes de production, règles d'usage des intrants et pesticides, gestion de l'eau, etc.)"
   },
   {
     "factor": "Offre alimentaire privée",
-    "code": "4- of alim priv",
+    "code": "of alim priv",
     "definition": "nombre, nature et diversité des services de restauration et de produits alimentaires privés sur le campus"
   },
   {
     "factor": "Offre alimentaire en restauration collective",
-    "code": "5- of alim coll",
+    "code": "of alim coll",
     "definition": "nombre, nature et diversité des services de restauration collective sur le campus"
   },
   {
     "factor": "Accessibilité, mobilité",
-    "code": "6- mob",
+    "code": "mob",
     "definition": "Nature et qualité de l'offre de mobilité/accès vers les services du campus"
   },
   {
     "factor": "Demande en produits alimentaires",
-    "code": "7- dem prod alim",
+    "code": "dem prod alim",
     "definition": "Préférences alimentaires, nature et diversité des régimes alimentaires"
   },
   {
     "factor": "Nombre de mangeurs",
-    "code": "8- dem vol",
+    "code": "dem vol",
     "definition": "Nombre de personnes mangeant sur le campus"
   },
   {
     "factor": "CSP des mangeur.es",
-    "code": "9- CSP",
+    "code": "CSP",
     "definition": "Distribution socioprofessionnelle et des revenus des personnes sur le campus"
   },
   {
     "factor": "Age des mangeur.es",
-    "code": "10- âge",
+    "code": "âge",
     "definition": "Distribution des classes d'âge des personnes sur le campus"
   },
   {
     "factor": "Santé des mangeur.es",
-    "code": "11- santé",
+    "code": "santé",
     "definition": "Etat de santé des personnes sur le campus"
   },
   {
     "factor": "Part budget dans alimentation",
-    "code": "12- budget",
+    "code": "budget",
     "definition": "Part du budget des mangeur.es alloué à l'alimentation"
   },
   {
     "factor": "Gestion des déchets",
-    "code": "13- déchets",
+    "code": "déchets",
     "definition": "Modalités de gestion des restes et des emballages alimentaires"
   },
   {
     "factor": "Temps pour manger",
-    "code": "14-tps repas",
+    "code": "tps repas",
     "definition": "Pratiques de l'organisation du temps dédié à l'alimentation sur le campus (télétravail, pauses…)"
   },
   {
     "factor": "Etat de l'environnement",
-    "code": "15- état env",
+    "code": "état env",
     "definition": "Etat écologique et sanitaire du campus"
   },
   {
     "factor": "Capacités transformation et stockage",
-    "code": "16- transf et stock",
+    "code": "transf et stock",
     "definition": "Capacité de transformation et de stockage des produits alimentaires et agricoles"
   },
   {
     "factor": "Approvisionnement énergie",
-    "code": "17- NRJ",
+    "code": "NRJ",
     "definition": "Nature et accessibilité de l'approvisionnement en énergie"
   },
   {
     "factor": "Gouvernance du campus",
-    "code": "18- gouv",
+    "code": "gouv",
     "definition": "Modalités de prise de décision"
   },
   {
     "factor": "Finalité et vocation du campus",
-    "code": "19- strat",
+    "code": "strat",
     "definition": "Orientations stratégiques des activités du campus"
   },
   {
     "factor": "Interactions territoriales",
-    "code": "20- interac",
+    "code": "interac",
     "definition": "Nature de l'intégration du campus dans le paysage national et le territoire : capacité des acteurs du campus à se coorodnenr et créer des realtions et des partenariats avec l'extérieur"
   },
   {
     "factor": "Action collective",
-    "code": "21- act coll",
+    "code": "act coll",
     "definition": "Capacité des mangeur.es à s'organiser et mener des actions collectives"
   },
   {
     "factor": "Politique alimentaire",
-    "code": "22- pol al",
+    "code": "pol al",
     "definition": "Nature et modalités des politiques alimentaires sur le campus"
   }
 ]

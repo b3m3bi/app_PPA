@@ -9,14 +9,15 @@ function renderDefinitionTable(nodeData) {
     // Reset table
     definitionTable.innerHTML = '';
     // Add data
-    for (let node of nodeData){
-        addDefinitionToTable(definitionTable, node.factor, node.code, node.definition);
+    for (let i = 0; i < nodeData.length; i++){
+        let node = nodeData[i];
+        addDefinitionToTable(definitionTable, node.factor, node.code, node.definition, i);
     }
 }
 
-function addDefinitionToTable(definitionTable, factor, code, definition) {
+function addDefinitionToTable(definitionTable, factor, code, definition, index) {
     let row = definitionTable.insertRow();
-    row.innerHTML = `<td>${factor}</td> <td>${code}</td> <td>${definition}</td>`;
+    row.innerHTML = `<td>${index + 1}</td> <td>${factor}</td> <td>${code}</td> <td>${definition}</td>`;
 
     let actionCell = row.insertCell();
     let deleteBtn = document.createElement('button');
