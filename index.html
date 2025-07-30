@@ -26,25 +26,40 @@
     </nav>
     <main>
         <div class="tab1">
-            <div class="definitions-form-container">
-                <div>
-                    <label for="factor">Factor</label>
-                    <input type="text" id="factor" name="factor">
+            <div id="definition-form-modal">
+                <div class="form-container">
+                    <span class="close-btn">&times;</span>
+                    <h3>Agregar factor</h3>
+                    <div class="input-label">
+                        <label for="factor">Factor</label>
+                        <input type="text" id="factor" name="factor">
+                    </div>
+                    <div>
+                        <label for="code">Código</label>
+                        <input type="text" id="code" name="code">
+                    </div>
+                    <div>
+                        <label for="definition">Definición</label>
+                        <textarea id="definition"></textarea>
+                    </div>
+                    <button id="add-definition-btn" class="btn">Agregar</button>
+                    <button id="update-definition-btn" class="btn">Actualizar</button>
                 </div>
-                <div>
-                    <label for="code">Código</label>
-                    <input type="text" id="code" name="code">
-                </div>
-                <div>
-                    <label for="definition">Definición</label>
-                    <textarea id="definition"></textarea>
-                </div>
-                <button id="add-btn">Agregar</button>
-                <button id="update-btn">Actualizar</button>
             </div>
 
             <div class="container">
                 <h2>Definiciones</h2>
+
+
+                <div class="options-container">
+                    <button id="new-definition-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <span>Nuevo factor</span> 
+                    </button>
+                </div>
+
                 <table id="definition-table">
                     <thead>
                         <tr>
