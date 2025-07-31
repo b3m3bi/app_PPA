@@ -47,41 +47,44 @@
                 </div>
             </div>
 
-            <div class="container">
-                <h2>Definiciones</h2>
-
-
-                <div class="options-container">
-                    <button id="new-definition-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        <span>Nuevo factor</span> 
-                    </button>
+            <div class="tab-container">
+                <div class="content-container">
+                        <h2>Definiciones</h2>
+                        <div class="options-container">
+                            <button id="new-definition-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                <span>Nuevo factor</span> 
+                            </button>
+                        </div>
+        
+                        <table id="definition-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Factor</th>
+                                    <th>Código</th>
+                                    <th>Definición</th>
+                                    <th>Acción</th>
+                                </tr>
+                                <tbody></tbody>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
-
-                <table id="definition-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Factor</th>
-                            <th>Código</th>
-                            <th>Definición</th>
-                            <th>Acción</th>
-                        </tr>
-                        <tbody></tbody>
-                    </thead>
-                </table>
-            </div>
         </div>
 
         <div class="tab2">
-            <h2 id="influencias">Matriz de influencias</h2>
-        
-            <div id="table-container">
-                <table id="influence-matrix-table">
-                    <tbody></tbody>
-                </table>
+            <div class="tab-container">
+                <div class="content-container">
+                    <h2 id="influencias">Matriz de influencias</h2>
+                    <div class="influence-table-container">
+                        <table id="influence-matrix-table">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -130,18 +130,40 @@ main {
 
 }
 
-.container {
+.tab-container {
     background-color: var(--col-light-main);
-    padding: 24px;
     border-radius: 16px;
     box-shadow: 0 0 5px var(--col-light-shadow);
+    width: min(1400px, calc(100vw - 24px));
+}
+
+.content-container{
+    padding: 24px;
+}
+
+.influence-table-container {
+    width: 100%;
+    /* background-color: red; */
+    overflow-x: auto;
+}
+
+.matrix-cell {
+    height: 2.5rem;
+    width: 2.5rem;
+}
+
+#influence-matrix-table tr:first-child > th {
+    transform: rotate(-90deg);
+}
+
+#influence-matrix-table td {
+    width: 3rem;
 }
 
 
 #definition-table {
     margin-top: 24px;
-    max-width: 1400px;
-
+    
     border-collapse: separate;
     border-spacing: 0;
     /* border: 1px solid var(--col-light-third); */
@@ -360,3 +382,4 @@ hr {
     align-items: center;
     gap: 8px;
 }
+
