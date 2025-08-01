@@ -152,14 +152,57 @@ main {
     width: 2.5rem;
 }
 
-#influence-matrix-table tr:first-child > th {
-    transform: rotate(-90deg);
+/* #influence-matrix-table td, 
+#influence-matrix-table th {
+    width: 5rem;
+} */
+
+.matrix-column-name {
+    height: 140px;
+    white-space: nowrap;
+    max-width: 2.5rem;
 }
 
-#influence-matrix-table td {
-    width: 3rem;
+.matrix-column-name > div {
+
+    transform: translate(-20px, 16px) rotate(-45deg);
+    /* con bordes */
+    /* border-top: 1px solid var(--col-light-fourth); */
+    height: 30px;
+    width: 150px;
+    display: flex;
+    padding-left: 24px;
+    align-items: center;
+    justify-content: flex-start;
 }
 
+.matrix-row-name {
+    text-align: end;
+}
+
+.matrix-row-name div {
+    padding-right: 8px;
+    
+}
+
+
+#influence-matrix-table {
+    border-collapse: collapse;
+}
+
+#influence-matrix-table input {
+    border: 1px solid var(--col-light-third);
+    border-radius: 4px;
+}
+
+#influence-matrix-table input:disabled {
+    background-color: var(--col-light-third);
+}
+
+#influence-matrix-table input[value="1"] {
+    background-color: var(--col-dark-second);
+    color: var(--col-light-main)
+}
 
 #definition-table {
     margin-top: 24px;

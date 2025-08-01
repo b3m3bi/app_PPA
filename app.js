@@ -136,10 +136,12 @@ function renderInfluenceMatrixTable(linkData){
     // Put names at first row
     influenceMatrixTable.innerHTML = '';
     let firstRow = influenceMatrixTable.insertRow();
+    // vacio el primer elemento
     firstRow.innerHTML = '<th></th>';
     for(let node of nodeData){
         let th = document.createElement('th');
-        th.textContent = node.code;
+        th.innerHTML = `<div><span>${node.code}</span></div>`;
+        th.classList.add('matrix-column-name');
         firstRow.appendChild(th)
     }
 
@@ -147,7 +149,8 @@ function renderInfluenceMatrixTable(linkData){
     for(let i = 0; i < nodeData.length; i++){
         let row = influenceMatrixTable.insertRow();
         // put names at first column
-        row.innerHTML = `<th>${nodeData[i].code}</th>`;
+        row.innerHTML = `<th><div><span>${nodeData[i].code}</span></div></th>`;
+        row.classList.add('matrix-row-name');
         for(let j = 0; j < nodeData.length; j++){
             let cell = row.insertCell();
             // create input and fill with adjacency matrix value
@@ -179,6 +182,7 @@ function renderInfluenceMatrixTable(linkData){
                     }
                     linkData.push(newLink);
                 }
+                input.setAttribute('value',inputElement.value);
                 renderPlots();
             })
             if (i === j) {
