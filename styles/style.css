@@ -147,15 +147,11 @@ main {
     overflow-x: auto;
 }
 
-.matrix-cell {
+.matrix-cell-btn {
     height: 2.5rem;
     width: 2.5rem;
 }
 
-/* #influence-matrix-table td, 
-#influence-matrix-table th {
-    width: 5rem;
-} */
 
 .matrix-column-name {
     height: 140px;
@@ -180,9 +176,8 @@ main {
     text-align: end;
 }
 
-.matrix-row-name div {
+.matrix-row-name > div {
     padding-right: 8px;
-    
 }
 
 
@@ -190,18 +185,55 @@ main {
     border-collapse: collapse;
 }
 
-#influence-matrix-table input {
+.matrix-cell-btn {
     border: 1px solid var(--col-light-third);
     border-radius: 4px;
 }
 
-#influence-matrix-table input:disabled {
+.matrix-cell-btn:disabled {
     background-color: var(--col-light-third);
 }
 
-#influence-matrix-table input[value="1"] {
+.one-cell {
     background-color: var(--col-dark-second);
     color: var(--col-light-main)
+}
+
+.zero-cell {
+    background-color: var(--col-light-main);
+    color: var(--col-light-fourth);
+}
+
+.matrix-cell:hover > .info-hover{
+    display: block;
+}
+
+.matrix-cell {
+    position: relative;
+}
+
+
+.info-hover {
+    display: none;
+    background-color: var(--col-light-main);
+    border: 1px solid var(--col-light-second);
+    box-shadow: 0 0 5px var(--col-dark-second);
+    border-radius: 8px;
+    height: 60px;
+    width: 120px;
+    
+    position: absolute;
+    top: calc(-60px - 4px);
+    left: calc(-60px + calc(2.5rem / 2));
+    z-index: 1;
+
+}
+
+.info-hover > div.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #definition-table {
@@ -263,9 +295,9 @@ main {
     border-left: none;
 }
 
-#definition-table td {
+/* #definition-table td {
     padding: 8px 16px;
-}
+} */
 
 
 h2 {

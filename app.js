@@ -153,42 +153,66 @@ function renderInfluenceMatrixTable(linkData){
         row.classList.add('matrix-row-name');
         for(let j = 0; j < nodeData.length; j++){
             let cell = row.insertCell();
+            cell.classList.add('matrix-cell');
+
+            let infoHover = `
+            <div class="info-hover">
+                <div class="container">
+                    <div class="source"><span>${nodeData[i].code}</span></div>
+                    <div class="target"><span>${nodeData[j].code}</span></div>
+                </div>
+            </div>`
+
+            cell.innerHTML = infoHover;
+
             // create input and fill with adjacency matrix value
-            let input = document.createElement('input');
-            input.setAttribute('type', 'number')
-            input.setAttribute('class', 'matrix-cell');
-            input.setAttribute('value', adjMatrix[i][j]);
-            input.setAttribute('min', '0');
-            input.setAttribute('max', '100');
-            input.dataset.source = nodeData[i].code;
-            input.dataset.target = nodeData[j].code; 
-            input.addEventListener('change', (event) => {
-                let inputElement = event.target;
-                let link = linkData.find(link => 
-                    link.source === inputElement.dataset.source && link.target === inputElement.dataset.target
+            let button = document.createElement('button');
+            button.setAttribute('class', 'matrix-cell-btn');
+
+            button.dataset.source = nodeData[i].code;
+            button.dataset.target = nodeData[j].code; 
+
+            let link = linkData.find(link => 
+                link.source === button.dataset.source && link.target === button.dataset.target
+            )
+
+            if (link) {
+                button.textContent = link.weight;
+                button.classList.add('one-cell');
+            } else {
+                button.textContent = 0;
+                button.classList.add('zero-cell');
+            }
+
+            button.addEventListener('click', (event) => {
+                let buttonElement = event.target;
+                let selectedLink = linkData.find(link => 
+                    link.source === buttonElement.dataset.source && link.target === buttonElement.dataset.target
                 )
-                if (link){
-                    if (inputElement.value === '0'){
-                        // if no weight remove link
-                        linkData.splice(linkData.findIndex(l => l === link), 1)
-                    } else {
-                        link.weight = parseInt(inputElement.value);
-                    }
+                //  if link exist delete it
+                if (selectedLink) {
+                    linkData.splice(linkData.findIndex(l => l === link), 1)
+                    buttonElement.textContent = 0;
+                    buttonElement.classList.remove('one-cell');
+                    buttonElement.classList.add('zero-cell');
                 } else {
+                    // if link does not exist create it
                     let newLink = {
-                        source: inputElement.dataset.source,
-                        target: inputElement.dataset.target,
-                        weight: parseInt(inputElement.value)
+                        source: buttonElement.dataset.source,
+                        target: buttonElement.dataset.target,
+                        weight: 1
                     }
                     linkData.push(newLink);
+                    buttonElement.textContent = 1;
+                    buttonElement.classList.remove('zero-cell');
+                    buttonElement.classList.add('one-cell');
                 }
-                input.setAttribute('value',inputElement.value);
                 renderPlots();
             })
             if (i === j) {
-                input.setAttribute('disabled', 'disabled')
+                button.setAttribute('disabled', 'disabled');
             }
-            cell.appendChild(input);
+            cell.appendChild(button);
         }
         
     }
