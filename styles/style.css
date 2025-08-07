@@ -145,6 +145,7 @@ main {
     width: 100%;
     /* background-color: red; */
     overflow-x: auto;
+    padding-bottom: 180px;
 }
 
 .matrix-cell-btn {
