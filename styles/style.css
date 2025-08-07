@@ -152,6 +152,10 @@ main {
     width: 2.5rem;
 }
 
+.matrix-cell-btn:hover {
+    box-shadow: 0 0 5px var(--col-highlight-main);
+    border: 1px solid var(--col-highlight-main);
+}
 
 .matrix-column-name {
     height: 140px;
@@ -173,6 +177,7 @@ main {
 }
 
 .matrix-row-name {
+    min-width: 120px;
     text-align: end;
 }
 
@@ -212,29 +217,87 @@ main {
     position: relative;
 }
 
-
 .info-hover {
     display: none;
-    background-color: var(--col-light-main);
     border: 1px solid var(--col-light-second);
     box-shadow: 0 0 5px var(--col-dark-second);
     border-radius: 8px;
-    height: 60px;
-    width: 120px;
+
+    width: 160px;
     
     position: absolute;
-    top: calc(-60px - 4px);
-    left: calc(-60px + calc(2.5rem / 2));
+    top: calc(100% + 4px);
+    left: calc(-80px + calc(2.5rem / 2));
     z-index: 1;
-
 }
 
 .info-hover > div.container {
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    padding: 8px;
 }
+
+.arrow-down > svg,
+.x-mark > svg {
+    margin: 8px;
+    height: 1.2rem;
+    color: var(--col-highlight-main)
+}
+
+.zero-cell-info {
+    background-color: var(--col-light-main);
+}
+
+.zero-cell-info .icon-container-arrow-down {
+    display: none;
+}
+
+.zero-cell-info .icon-container-x-mark {
+    display: block;
+}
+
+.one-cell-info .icon-container-arrow-down {
+    display: block;
+}
+
+.one-cell-info .icon-container-x-mark {
+    display: none;
+}
+
+.one-cell-info {
+    background-color: var(--col-dark-second);
+    color: var(--col-light-main)
+}
+
+.disabled-cell-info {
+    background-color: var(--col-light-second);
+    color: var(--col-light-fourth);
+}
+
+.disabled-cell-info .x-mark > svg {
+    color: var(--col-light-fourth);
+}
+
+.source-container,
+.target-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.source-container > .label,
+.target-container > .label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--col-light-fourth)
+}
+
 
 #definition-table {
     margin-top: 24px;
@@ -295,9 +358,9 @@ main {
     border-left: none;
 }
 
-/* #definition-table td {
+#definition-table td {
     padding: 8px 16px;
-} */
+}
 
 
 h2 {

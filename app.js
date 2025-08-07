@@ -149,21 +149,39 @@ function renderInfluenceMatrixTable(linkData){
     for(let i = 0; i < nodeData.length; i++){
         let row = influenceMatrixTable.insertRow();
         // put names at first column
-        row.innerHTML = `<th><div><span>${nodeData[i].code}</span></div></th>`;
-        row.classList.add('matrix-row-name');
+        row.innerHTML = `<th class="matrix-row-name"><div><span>${nodeData[i].code}</span></div></th>`;
         for(let j = 0; j < nodeData.length; j++){
             let cell = row.insertCell();
             cell.classList.add('matrix-cell');
 
-            let infoHover = `
-            <div class="info-hover">
-                <div class="container">
-                    <div class="source"><span>${nodeData[i].code}</span></div>
-                    <div class="target"><span>${nodeData[j].code}</span></div>
+            let svgArrowDown = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" /></svg>';
+            let svgXMark = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>';
+
+            let infoHover = document.createElement('div');
+            infoHover.classList.add("info-hover");
+            infoHover.innerHTML = `
+            <div class="container">
+                <div class="source-container">
+                    <div class="label">
+                        <span>Influencia de</span>
+                    </div>
+                    <div class="factor-name">
+                        <span>${nodeData[i].factor}</span>
+                    </div>
+                </div>
+                <div class="icon-container-arrow-down"><span class="arrow-down">${svgArrowDown}</span></div>
+                <div class="icon-container-x-mark"><span class="x-mark">${svgXMark}</span></div>
+                <div class="target-container">
+                    <div class="label">
+                        <span>sobre<span>
+                    </div>
+                    <div class="factor-name">
+                        <span>${nodeData[j].factor}</span>
+                    </div>
                 </div>
             </div>`
 
-            cell.innerHTML = infoHover;
+            cell.append(infoHover);
 
             // create input and fill with adjacency matrix value
             let button = document.createElement('button');
@@ -179,9 +197,11 @@ function renderInfluenceMatrixTable(linkData){
             if (link) {
                 button.textContent = link.weight;
                 button.classList.add('one-cell');
+                infoHover.classList.add('one-cell-info');
             } else {
                 button.textContent = 0;
                 button.classList.add('zero-cell');
+                infoHover.classList.add('zero-cell-info');
             }
 
             button.addEventListener('click', (event) => {
@@ -195,6 +215,8 @@ function renderInfluenceMatrixTable(linkData){
                     buttonElement.textContent = 0;
                     buttonElement.classList.remove('one-cell');
                     buttonElement.classList.add('zero-cell');
+                    infoHover.classList.remove('one-cell-info');
+                    infoHover.classList.add('zero-cell-info');
                 } else {
                     // if link does not exist create it
                     let newLink = {
@@ -206,11 +228,14 @@ function renderInfluenceMatrixTable(linkData){
                     buttonElement.textContent = 1;
                     buttonElement.classList.remove('zero-cell');
                     buttonElement.classList.add('one-cell');
+                    infoHover.classList.remove('zero-cell-info');
+                    infoHover.classList.add('one-cell-info');
                 }
                 renderPlots();
             })
             if (i === j) {
                 button.setAttribute('disabled', 'disabled');
+                infoHover.classList.add('disabled-cell-info');
             }
             cell.appendChild(button);
         }
