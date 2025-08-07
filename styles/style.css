@@ -89,7 +89,7 @@ main {
     background-color: var(--col-light-second);
 }
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
     #definition-table thead{
         display: none;
     }
@@ -128,7 +128,7 @@ main {
         padding: 8px;
     }
 
-}
+} */
 
 .tab-container {
     background-color: var(--col-light-main);

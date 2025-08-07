@@ -56,6 +56,8 @@ const definitionInput = document.querySelector('#definition');
 
 const addBtn = document.querySelector('#add-definition-btn');
 const updateBtn = document.querySelector('#update-definition-btn');
+const addTitle = document.querySelector('#add-definition-title');
+const updateTitle = document.querySelector('#update-definition-title');
 
 function addDefinitionToNodeData(factor, code, definition){
     let node = {
@@ -473,9 +475,15 @@ function showModal(mode) {
     definitionFormModal.style.display = 'block';
     if (mode === 'add'){
         addBtn.style.display = 'block';
+        updateBtn.style.display = 'none';
+        addTitle.style.display = 'block';
+        updateTitle.style.display = 'none';
     }
     if (mode === 'edit'){
+        addBtn.style.display = 'none';
         updateBtn.style.display = 'block';
+        addTitle.style.display = 'none';
+        updateTitle.style.display = 'block';
     }
 
 }
