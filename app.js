@@ -393,65 +393,84 @@ function plotInfluence(typeOfForces, containerId) {
 
 }
 
+const colHighlightMain = window.getComputedStyle(document.body).getPropertyValue('--col-highlight-main');
+const colHighlightSecond = window.getComputedStyle(document.body).getPropertyValue('--col-highlight-second');
+const colHighlightThird = window.getComputedStyle(document.body).getPropertyValue('--col-highlight-third');
+const fontFamily = window.getComputedStyle(document.body).fontFamily;
+
 function plotForces(forces, plotContainer) {
     // plot
     plotContainer.innerHTML = '';
 
-    const width = 640;
+    const width = 600;
     const height = 400;
-    const marginTop = 20;
-    const marginRight = 20;
-    const marginBottom = 30;
-    const marginLeft = 40;
+    const marginTop = 60;
+    const marginRight = 60;
+    const marginBottom = 60;
+    const marginLeft = 60;
 
     const x = d3.scaleLinear().domain(d3.extent(forces, d => d.x)).nice().range([marginLeft, width - marginRight]);
-
     const y = d3.scaleLinear().domain(d3.extent(forces, d => d.y)).nice().range([height - marginBottom, marginTop]);
 
-    const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
-        .attr('style', 'max-width: 1000px; height: auto; font: 10px sans-serif;');
+    const svg = d3.create('svg')
+        .attr('viewBox', [0, 0, width, height])
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .style('width', '100%')
+        .style('height', 'auto');
 
-    svg.append('g').attr('transform', `translate(0,${height - marginBottom})`)
+    svg.append('g')
+        .attr('transform', `translate(0,${height - marginBottom})`)
         .call(d3.axisBottom(x))
         .call(g => g.append('text')
-            .attr('x', width)
-            .attr('y', marginBottom - 4)
+            .attr('x', width / 2)
+            .attr('y', 40 )
             .attr('fill', 'currentColor')
-            .attr('text-anchor', 'end')
-            .text('Dependance →')
+            .attr('text-anchor', 'middle')
+            .text('Dependance')
         );
 
-    svg.append('g').attr('transform', `translate(${marginLeft}, 0)`)
+    svg.append('g')
+        .attr('transform', `translate(${marginLeft}, 0)`)
         .call(d3.axisLeft(y))
         .call(g => g.append('text')
-            .attr('x', -marginLeft)
-            .attr('y', 10)
+            .attr('x', - (height / 2))
+            .attr('y', - 40)
+            .attr('transform', 'rotate(-90)')
             .attr('fill', 'currentColor')
-            .attr('text-anchor', 'start')
-            .text('↑ Influence')
+            .attr('text-anchor', 'middle')
+            .text('Influence')
         );
 
-    svg.append('g')
-        .attr('stroke', 'steelblue')
-        .attr('stroke-width', 1.5)
-        .attr('fill', 'none')
-        .selectAll('circle')
+    const point = svg.selectAll('.point')
         .data(forces)
-        .join('circle')
+        .enter()
+        .append('g')
+        .attr('class', 'point');
+    
+    point.append('circle')
         .attr('cx', d => x(d.x))
         .attr('cy', d => y(d.y))
-        .attr('r', 2);
-
-    svg.append('g')
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', 10)
-        .selectAll('text')
-        .data(forces)
-        .join('text')
+        .attr('r', 2)
+        .attr('stroke', colHighlightMain)
+        .attr('stroke-width', 1.5)
+        .attr('fill', colHighlightThird)
+    
+    point.append('text')
         .attr('dy', '0.35em')
-        .attr('x', d => x(d.x) + 7)
+        .attr('x', d => x(d.x) + 5)
         .attr('y', d => y(d.y))
+        .attr('class', 'point-label')
         .text(d => d.name);
+    
+    point.on('mouseover', function (e, d) {
+            d3.selectAll('.point').attr('opacity', '0.2');
+            d3.select(this)
+                .attr('opacity', '1')
+        })
+        .on('mouseout', function (e, d) {
+            d3.selectAll('.point')
+                .attr('opacity', '1')
+        })
 
     plotContainer.append(svg.node());
 

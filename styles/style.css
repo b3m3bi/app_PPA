@@ -1,5 +1,7 @@
 :root {
-    font-family: 'Inter', sans-serif;
+
+    --main-font: 'Inter', sans-serif;
+    font-family: var(--main-font); 
     font-size: 15px;
 
     --col-light-main: #ffffff;
@@ -10,7 +12,7 @@
     --col-dark-second: #52504d;
     --col-highlight-main: #EB5E28;
     --col-highlight-second: #e28e6d;
-    --col-highlight-third: #c24d1f;
+    --col-highlight-third: #eb5f2880;
     
     --col-light-shadow: #d3d3d3;
 }
@@ -522,3 +524,12 @@ hr {
     gap: 8px;
 }
 
+
+
+text {
+    font-family: var(--main-font);
+}
+
+.point-label {
+    font-size: 0.6rem;
+}
