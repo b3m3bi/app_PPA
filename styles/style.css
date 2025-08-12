@@ -533,3 +533,25 @@ text {
 .point-label {
     font-size: 0.6rem;
 }
+
+.point-tooltip {
+    position: absolute;
+    background-color: var(--col-light-main);
+    border: 1px solid var(--col-light-fourth);
+    box-shadow: 0 0 5px var(--col-light-shadow);
+    padding: 8px;
+    border-radius: 8px;
+    pointer-events: none;
+    
+}
+
+.factor-name {
+    font-weight: 700;
+}
+
+.point-tooltip {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 200px;
+}

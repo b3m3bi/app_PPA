@@ -353,7 +353,7 @@ function plotInfluence(typeOfForces, containerId) {
 
     const influenceMatrix = getAdjMatrix(linkData, nodeData);
 
-    let forcesNames = nodeData.map(node => node.code);
+    let forcesCodes = nodeData.map(node => node.code);
 
     let forces = [];
 
@@ -383,7 +383,7 @@ function plotInfluence(typeOfForces, containerId) {
         let force = new Object();
         force.x = dependance[i];
         force.y = influence[i];
-        force.name = forcesNames[i];
+        force.code = forcesCodes[i];
         forces.push(force)
     }
  
@@ -396,7 +396,10 @@ function plotInfluence(typeOfForces, containerId) {
 const colHighlightMain = window.getComputedStyle(document.body).getPropertyValue('--col-highlight-main');
 const colHighlightSecond = window.getComputedStyle(document.body).getPropertyValue('--col-highlight-second');
 const colHighlightThird = window.getComputedStyle(document.body).getPropertyValue('--col-highlight-third');
-const fontFamily = window.getComputedStyle(document.body).fontFamily;
+
+function getFactorNameFromCode(code, nodeData) {
+    return nodeData.find(node => node.code === code).factor;
+}
 
 function plotForces(forces, plotContainer) {
     // plot
@@ -426,7 +429,7 @@ function plotForces(forces, plotContainer) {
             .attr('y', 40 )
             .attr('fill', 'currentColor')
             .attr('text-anchor', 'middle')
-            .text('Dependance')
+            .text('Dependencia')
         );
 
     svg.append('g')
@@ -438,7 +441,7 @@ function plotForces(forces, plotContainer) {
             .attr('transform', 'rotate(-90)')
             .attr('fill', 'currentColor')
             .attr('text-anchor', 'middle')
-            .text('Influence')
+            .text('Influencia')
         );
 
     const point = svg.selectAll('.point')
@@ -460,18 +463,33 @@ function plotForces(forces, plotContainer) {
         .attr('x', d => x(d.x) + 5)
         .attr('y', d => y(d.y))
         .attr('class', 'point-label')
-        .text(d => d.name);
-    
+        .text(d => d.code);
+
+    const tooltip = d3.select('body')
+        .append('div')
+        .attr('class', 'point-tooltip')
+        .style('opacity', 0);
+        
     point.on('mouseover', function (e, d) {
             d3.selectAll('.point').attr('opacity', '0.2');
             d3.select(this)
                 .attr('opacity', '1')
+
+            tooltip
+                .style('opacity', 1)
+                .html(` <div class="factor-name"><span>${getFactorNameFromCode(d.code, nodeData)}</span></div>
+                        <div class="influence">Influencia: <span>${d.y.toFixed(2)}</span></div>
+                        <div class="dependance">Dependencia: <span>${d.x.toFixed(2)}</span></div>`)
+                .style('left', (e.pageX) + 5 + 'px')
+                .style('top', (e.pageY) + 5 + 'px');
         })
         .on('mouseout', function (e, d) {
             d3.selectAll('.point')
                 .attr('opacity', '1')
+            tooltip
+                .style('opacity', 0)
         })
-
+    
     plotContainer.append(svg.node());
 
 }
