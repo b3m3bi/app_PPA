@@ -565,3 +565,11 @@ text {
     font-size: 0.7rem;
     opacity: 0.7;
 }
+
+.v-line-drag {
+    cursor: e-resize;
+}
+
+.h-line-drag {
+    cursor: n-resize;
+}
