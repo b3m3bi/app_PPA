@@ -407,7 +407,7 @@ function plotForces(forces, plotContainer) {
 
     const width = 600;
     const height = 400;
-    const marginTop = 60;
+    const marginTop = 20;
     const marginRight = 60;
     const marginBottom = 60;
     const marginLeft = 60;
@@ -448,7 +448,8 @@ function plotForces(forces, plotContainer) {
         .data(forces)
         .enter()
         .append('g')
-        .attr('class', 'point');
+        .attr('class', d => d.code.replace(/\s+/g, "-"))
+        .classed('point', true)
     
     point.append('circle')
         .attr('cx', d => x(d.x))
@@ -471,28 +472,193 @@ function plotForces(forces, plotContainer) {
         .style('opacity', 0);
         
     point.on('mouseover', function (e, d) {
-            d3.selectAll('.point').attr('opacity', '0.2');
-            d3.select(this)
-                .attr('opacity', '1')
+        // position tooltips in fix site https://stackoverflow.com/a/60472429
+        let pos = d3.select(this).node().getBoundingClientRect();
+        d3.selectAll('.point')
+            .attr('opacity', '0.2');
+        d3.selectAll(`.${d.code.replace(/\s+/g, "-")}`)
+            .attr('opacity', '1');
 
-            tooltip
-                .style('opacity', 1)
-                .html(` <div class="factor-name"><span>${getFactorNameFromCode(d.code, nodeData)}</span></div>
-                        <div class="influence">Influencia: <span>${d.y.toFixed(2)}</span></div>
-                        <div class="dependance">Dependencia: <span>${d.x.toFixed(2)}</span></div>`)
-                .style('left', (e.pageX) + 5 + 'px')
-                .style('top', (e.pageY) + 5 + 'px');
-        })
-        .on('mouseout', function (e, d) {
-            d3.selectAll('.point')
-                .attr('opacity', '1')
-            tooltip
-                .style('opacity', 0)
-        })
+        tooltip
+            .style('opacity', 1)
+            .html(` <div class="factor-name"><span>${getFactorNameFromCode(d.code, nodeData)}</span></div>
+                    <div class="influence">Influencia: <span>${d.y.toFixed(2)}</span></div>
+                    <div class="dependance">Dependencia: <span>${d.x.toFixed(2)}</span></div>`)
+            .style('left', pos.x + (pos.width / 2) + 'px')
+            .style('top', window.pageYOffset + pos.y + pos.height +  'px');
+    })
+    .on('mouseout', function (e, d) {
+        d3.selectAll('.point')
+            .attr('opacity', '1')
+        tooltip
+            .style('opacity', 0)
+    })
+
+    let verticalLineX = 1;
+    let horizontalLineY = 1;
+
+    let verticalLine = svg.append('line')
+        .attr('x1', x(verticalLineX))
+        .attr('x2', x(verticalLineX))
+        .attr('y1', marginTop)
+        .attr('y2', height - marginBottom)
+        .style('stroke-width', 1)
+        .style('stroke', 'black')
+        .style('stroke-dasharray', "2,2")
+        .style('opacity', 0.4)
+        .style('fill', 'none');
+
+    let horizontalLine = svg.append('line')
+        .attr('x1', marginLeft)
+        .attr('x2', width - marginRight)
+        .attr('y1', y(horizontalLineY))
+        .attr('y2', y(horizontalLineY))
+        .style('stroke-width', 1)
+        .style('stroke-dasharray', "2,2")
+        .style('stroke', 'black')
+        .style('opacity', 0.4)
+        .style('fill', 'none')
+
+    horizontalLine.on('mouseover', function(e,d) {
+        d3.select(this)
+            .style('opacity', 0.8)
+            .style('stroke-width', 4)
+    }).on('mouseout', function(e,d) {
+        d3.select(this)
+            .style('opacity', 0.4)
+            .style('stroke-width', 1)
+    })
+
+    verticalLine.on('mouseover', function(e,d) {
+        d3.select(this)
+            .style('opacity', 0.8)
+            .style('stroke-width', 4)
+    }).on('mouseout', function(e,d) {
+        d3.select(this)
+            .style('opacity', 0.4)
+            .style('stroke-width', 1)
+    })
+
+    const topLeftRect = svg.append('rect')
+        .attr('x', marginLeft)
+        .attr('y', marginTop)
+        .attr('width', x(verticalLineX)- marginLeft)
+        .attr('height', y(horizontalLineY) - marginTop )
+        .attr('fill', '#F04923')
+        .attr('opacity', 0.2)
+        .lower()
+
+    const botLeftRect = svg.append('rect')
+        .attr('x', marginLeft)
+        .attr('y', y(horizontalLineY))
+        .attr('width', x(verticalLineX)- marginLeft)
+        .attr('height', height - marginBottom - y(horizontalLineY) )
+        .attr('fill', '#FFBF00')
+        .attr('opacity', 0.2)
+        .lower()
     
+    const topRightRect = svg.append('rect')
+        .attr('x', x(verticalLineX))
+        .attr('y', marginTop)
+        .attr('width', width - x(verticalLineX) - marginLeft)
+        .attr('height', y(horizontalLineY) - marginTop)
+        .attr('fill', '#00A86B')
+        .attr('opacity', 0.2)
+        .lower()
+
+    const botRightRect = svg.append('rect')
+        .attr('x', x(verticalLineX))
+        .attr('y', y(horizontalLineY))
+        .attr('width',width - x(verticalLineX) - marginLeft)
+        .attr('height',height - marginBottom - y(horizontalLineY) )
+        .attr('fill', '#0067A5')
+        .attr('opacity', 0.2)
+        .lower()
+
+    svg.append('text')
+        .attr('x', marginLeft + 5)
+        .attr('y', marginTop + 5)
+        .attr('class', 'plot-rect-titles')
+        .attr('text-anchor', 'start')
+        .attr('dominant-baseline', 'hanging')
+        .style('fill', '#F04923')
+        .text('Impulsoras')
+        .lower();;
+
+    svg.append('text')
+        .attr('x', marginLeft + 5)
+        .attr('y', height - marginBottom - 5)
+        .attr('class', 'plot-rect-titles')
+        .attr('text-anchor', 'start')
+        .attr('dominant-baseline', 'auto')
+        .style('fill', '#FFBF00')
+        .text('Autónomas')
+        .lower();;
+
+    svg.append('text')
+        .attr('x', width - marginLeft - 5)
+        .attr('y', marginTop + 5)
+        .attr('class', 'plot-rect-titles')
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'hanging')
+        .style('fill', '#00A86B')
+        .text('Palancas')
+        .lower();
+
+    svg.append('text')
+        .attr('x', width - marginLeft - 5)
+        .attr('y', height - marginBottom - 5)
+        .attr('class', 'plot-rect-titles')
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'auto')
+        .style('fill', '#0067A5')
+        .text('Efectos')
+        .lower();
+
+
+
+    verticalLine.call(d3.drag()
+        .on("drag", function(event){
+            verticalLineX = Math.max(marginLeft, Math.min(width - marginRight, event.x))
+            d3.select(this)
+                .attr("x1", verticalLineX)
+                .attr("x2", verticalLineX)
+            topLeftRect.attr('width', verticalLineX - marginLeft)
+            botLeftRect.attr('width', verticalLineX- marginLeft)
+            topRightRect
+                .attr('x', verticalLineX)
+                .attr('width', width  - verticalLineX - marginLeft)
+            botRightRect
+                .attr('x', verticalLineX)
+                .attr('width',width - verticalLineX - marginLeft)
+
+            
+        }));
+
+    horizontalLine.call(d3.drag()
+        .on("drag", function(event){
+            horizontalLineY = Math.max(marginTop, Math.min(height - marginBottom, event.y))
+            d3.select(this)
+                .attr('y1', horizontalLineY)
+                .attr('y2', horizontalLineY)
+            topLeftRect.attr('height', horizontalLineY - marginTop )
+            botLeftRect
+                .attr('y', horizontalLineY)
+                .attr('height', height - marginBottom - horizontalLineY) 
+            topRightRect
+                .attr('height', horizontalLineY - marginTop)
+            botRightRect
+                .attr('y', horizontalLineY)
+                .attr('height',height - marginBottom - horizontalLineY) 
+                
+
+        }));
+
     plotContainer.append(svg.node());
 
 }
+
+
 
 function renderPlots() {
     plotInfluence('direct', '.plot-direct-influence');
