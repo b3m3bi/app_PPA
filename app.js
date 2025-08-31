@@ -444,6 +444,159 @@ function plotForces(forces, plotContainer, plotUID) {
             .text('Influencia')
         );
 
+    let verticalLineX = 1;
+    let horizontalLineY = 1;
+
+    function createDragLine(x1, x2, y1, y2, classId){
+        return svg.append('line')
+        .attr('x1', x1)
+        .attr('x2', x2)
+        .attr('y1',y1)
+        .attr('y2', y2)
+        .style('stroke-width', 1)
+        .style('stroke', 'black')
+        .style('stroke-dasharray', "2,2")
+        .style('opacity', 0.4)
+        .style('fill', 'none')
+        .attr('class', `${classId}-drag-line`)
+        .on('mouseover', function(e,d) {
+            d3.select(this)
+                .style('opacity', 0.8)
+                .style('stroke-width', 4)
+        }).on('mouseout', function(e,d) {
+            d3.select(this)
+                .style('opacity', 0.4)
+                .style('stroke-width', 1)
+        })
+    }
+
+    let verticalLine = createDragLine(x(verticalLineX), x(verticalLineX), marginTop, height - marginBottom, 'vertical')
+    let horizontalLine = createDragLine(marginLeft, width - marginRight, y(horizontalLineY), y(horizontalLineY), 'horizontal')
+
+    function createRectangle(x, y, width, height, fill, id){
+        return svg.append('rect')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', fill)
+        .attr('opacity', 0.2)
+        .attr('id', `${id}-${plotUID}`)
+        .classed(`rect ${id} ${plotUID}`, true)
+        .lower()
+    }
+
+    const regionColors = ['#F04923', '#FFBF00', '#00A86B', '#0067A5']
+
+    const topLeftRect = createRectangle(
+        marginLeft, marginTop, 
+        x(verticalLineX) - marginLeft, y(horizontalLineY) - marginTop, 
+        regionColors[0], 'topLeftRect')
+
+    const botLeftRect = createRectangle(
+        marginLeft, y(horizontalLineY), 
+        x(verticalLineX) - marginLeft,  height - marginBottom - y(horizontalLineY), 
+        regionColors[1], 'botLeftRect')
+    
+    const topRightRect = createRectangle(
+        x(verticalLineX), marginTop,
+        width - x(verticalLineX) - marginLeft, y(horizontalLineY) - marginTop,
+        regionColors[2], 'topRightRect')
+
+    const botRightRect = createRectangle(
+        x(verticalLineX), y(horizontalLineY), 
+        width - x(verticalLineX) - marginLeft, height - marginBottom - y(horizontalLineY),
+        regionColors[3], 'botRightRect')
+
+    function inRegion(d, idRect){
+        if (idRect === 'topLeftRect') return d.x <= verticalLineX && d.y >= horizontalLineY;
+        if (idRect === 'botLeftRect') return d.x <= verticalLineX && d.y < horizontalLineY;
+        if (idRect === 'topRightRect') return d.x > verticalLineX && d.y >= horizontalLineY;
+        if (idRect === 'botRightRect') return d.x > verticalLineX && d.y < horizontalLineY;
+    }
+
+    function createClipPathRect(idRect) {
+        svg.append('clipPath')
+            .attr('id', `clip-${idRect}-${plotUID}`)
+            .append('use')
+            .attr('href',  `#${idRect}-${plotUID}`);
+    }
+    
+    function createRegionText(x, y, idRect, fill, text, textAnchor, dominantBaseline){
+        createClipPathRect(idRect);
+        svg.append('text')
+            .attr('x', x)
+            .attr('y', y)
+            .attr('clip-path', `url(#clip-${idRect}-${plotUID})`)
+            .classed(`plot-rect-titles ${idRect} ${plotUID}`, true)
+            .attr('text-anchor', textAnchor)
+            .attr('dominant-baseline', dominantBaseline)
+            .style('opacity', 0.7)
+            .style('fill', fill)
+            .text(text)
+            .on('mouseover', function(e, d) {
+                d3.selectAll('.rect')
+                    .style('opacity', 0.05)
+                d3.selectAll('.plot-rect-titles')
+                    .style('opacity', 0.05)
+                d3.selectAll(`.${idRect}`)
+                    .style('opacity', 0.3)
+                d3.select(this)
+                    .style('opacity', 1)
+                d3.selectAll('.point')
+                    .style('opacity', d => inRegion(d, idRect) ? 1 : 0.1)
+            })
+            .on('mouseout', function(e, d) {
+                d3.select(this)
+                    .style('opacity', 0.7)
+                d3.selectAll('.plot-rect-titles')
+                    .style('opacity', 0.7)
+                d3.selectAll('.point')
+                    .style('opacity', 1)
+                d3.selectAll('.rect')
+                    .style('opacity', 0.2)
+            })
+    }
+
+    createRegionText(marginLeft + 5, marginTop + 5, 'topLeftRect', regionColors[0], 'Impulsoras', 'start', 'hanging');
+    createRegionText(marginLeft + 5, height - marginBottom - 5, 'botLeftRect', regionColors[1], 'Autónomas', 'start', 'auto');
+    createRegionText(width - marginLeft - 5, marginTop + 5, 'topRightRect', regionColors[2], 'Palancas', 'end', 'hanging');
+    createRegionText(width - marginLeft - 5, height - marginBottom - 5, 'botRightRect', regionColors[3], 'Efectos', 'end', 'auto');
+
+    verticalLine.call(d3.drag()
+        .on("drag", function(event){
+            verticalLineX = Math.max(x.domain()[0], Math.min(x.domain()[1], x.invert(event.x)));
+            d3.select(this)
+                .attr('x1', x(verticalLineX))
+                .attr('x2', x(verticalLineX))
+            topLeftRect.attr('width', x(verticalLineX) - marginLeft)
+            botLeftRect.attr('width', x(verticalLineX) - marginLeft)
+            topRightRect
+                .attr('x', x(verticalLineX))
+                .attr('width', width  - x(verticalLineX) - marginLeft)
+            botRightRect
+                .attr('x', x(verticalLineX))
+                .attr('width',width - x(verticalLineX) - marginLeft)
+           
+        }));
+
+    horizontalLine.call(d3.drag()
+        .on("drag", function(event){
+            horizontalLineY = Math.max(y.domain()[0], Math.min(y.domain()[1], y.invert(event.y)));
+            d3.select(this)
+                .attr('y1', y(horizontalLineY))
+                .attr('y2', y(horizontalLineY))
+            topLeftRect.attr('height', y(horizontalLineY) - marginTop )
+            botLeftRect
+                .attr('y', y(horizontalLineY))
+                .attr('height', height - marginBottom - y(horizontalLineY))
+            topRightRect
+                .attr('height', y(horizontalLineY) - marginTop)
+            botRightRect
+                .attr('y', y(horizontalLineY))
+                .attr('height',height - marginBottom - y(horizontalLineY)) 
+        }));
+
     const point = svg.selectAll('.point')
         .data(forces)
         .enter()
@@ -493,148 +646,6 @@ function plotForces(forces, plotContainer, plotUID) {
         tooltip
             .style('opacity', 0)
     })
-
-    let verticalLineX = 1;
-    let horizontalLineY = 1;
-
-    function createDragLine(x1, x2, y1, y2, classId){
-        return svg.append('line')
-        .attr('x1', x1)
-        .attr('x2', x2)
-        .attr('y1',y1)
-        .attr('y2', y2)
-        .style('stroke-width', 1)
-        .style('stroke', 'black')
-        .style('stroke-dasharray', "2,2")
-        .style('opacity', 0.4)
-        .style('fill', 'none')
-        .attr('class', `${classId}-drag-line`)
-        .on('mouseover', function(e,d) {
-            d3.select(this)
-                .style('opacity', 0.8)
-                .style('stroke-width', 4)
-        }).on('mouseout', function(e,d) {
-            d3.select(this)
-                .style('opacity', 0.4)
-                .style('stroke-width', 1)
-        })
-    }
-
-    let verticalLine = createDragLine(x(verticalLineX), x(verticalLineX), marginTop, height - marginBottom, 'vertical')
-    let horizontalLine = createDragLine(marginLeft, width - marginRight, y(horizontalLineY), y(horizontalLineY), 'horizontal')
-
-    function createRectangle(x, y, width, height, fill, id){
-        return svg.append('rect')
-        .attr('x', x)
-        .attr('y', y)
-        .attr('width', width)
-        .attr('height', height)
-        .attr('fill', fill)
-        .attr('opacity', 0.2)
-        .attr('id', `${id}-${plotUID}`)
-        .lower()
-    }
-
-    const regionColors = ['#F04923', '#FFBF00', '#00A86B', '#0067A5']
-
-    const topLeftRect = createRectangle(
-        marginLeft, marginTop, 
-        x(verticalLineX) - marginLeft, y(horizontalLineY) - marginTop, 
-        regionColors[0], 'topLeftRect')
-
-    const botLeftRect = createRectangle(
-        marginLeft, y(horizontalLineY), 
-        x(verticalLineX) - marginLeft,  height - marginBottom - y(horizontalLineY), 
-        regionColors[1], 'botLeftRect')
-    
-    const topRightRect = createRectangle(
-        x(verticalLineX), marginTop,
-        width - x(verticalLineX) - marginLeft, y(horizontalLineY) - marginTop,
-        regionColors[2], 'topRightRect')
-
-    const botRightRect = createRectangle(
-        x(verticalLineX), y(horizontalLineY), 
-        width - x(verticalLineX) - marginLeft, height - marginBottom - y(horizontalLineY),
-        regionColors[3], 'botRightRect')
-
-    function inRegion(d, idRect){
-        if (idRect === 'topLeftRect') return d.x <= verticalLineX && d.y >= horizontalLineY;
-        if (idRect === 'botLeftRect') return d.x <= verticalLineX && d.y < horizontalLineY;
-        if (idRect === 'topRightRect') return d.x > verticalLineX && d.y >= horizontalLineY;
-        if (idRect === 'botRightRect') return d.x > verticalLineX && d.y < horizontalLineY;
-    }
-
-    function createClipPathRect(idRect) {
-        svg.append('clipPath')
-            .attr('id', `clip-${idRect}-${plotUID}`)
-            .append('use')
-            .attr('href',  `#${idRect}-${plotUID}`);
-    }
-    
-    function createRegionText(x, y, idRect, fill, text, textAnchor, dominantBaseline){
-        createClipPathRect(idRect);
-        svg.append('text')
-            .attr('x', x)
-            .attr('y', y)
-            .attr('clip-path', `url(#clip-${idRect}-${plotUID})`)
-            .attr('class', 'plot-rect-titles')
-            .attr('text-anchor', textAnchor)
-            .attr('dominant-baseline', dominantBaseline)
-            .style('fill', fill)
-            .text(text)
-            .on('mouseover', function(e, d) {
-                d3.select(this)
-                    .style('opacity', 1)
-                d3.selectAll('.point')
-                    .style('opacity', d => inRegion(d, idRect) ? 1 : 0.1)
-            })
-            .on('mouseout', function(e, d) {
-                d3.select(this)
-                    .style('opacity', 0.7)
-                d3.selectAll('.point')
-                    .style('opacity', 1)
-            })
-    }
-
-    createRegionText(marginLeft + 5, marginTop + 5, 'topLeftRect', regionColors[0], 'Impulsoras', 'start', 'hanging');
-    createRegionText(marginLeft + 5, height - marginBottom - 5, 'botLeftRect', regionColors[1], 'Autónomas', 'start', 'auto');
-    createRegionText(width - marginLeft - 5, marginTop + 5, 'topRightRect', regionColors[2], 'Palancas', 'end', 'hanging');
-    createRegionText(width - marginLeft - 5, height - marginBottom - 5, 'botRightRect', regionColors[3], 'Efectos', 'end', 'auto');
-
-    console.log(verticalLineX)
-    verticalLine.call(d3.drag()
-        .on("drag", function(event){
-            verticalLineX = Math.max(x.domain()[0], Math.min(x.domain()[1], x.invert(event.x)));
-            d3.select(this)
-                .attr('x1', x(verticalLineX))
-                .attr('x2', x(verticalLineX))
-            topLeftRect.attr('width', x(verticalLineX) - marginLeft)
-            botLeftRect.attr('width', x(verticalLineX) - marginLeft)
-            topRightRect
-                .attr('x', x(verticalLineX))
-                .attr('width', width  - x(verticalLineX) - marginLeft)
-            botRightRect
-                .attr('x', x(verticalLineX))
-                .attr('width',width - x(verticalLineX) - marginLeft)
-           
-        }));
-
-    horizontalLine.call(d3.drag()
-        .on("drag", function(event){
-            horizontalLineY = Math.max(y.domain()[0], Math.min(y.domain()[1], y.invert(event.y)));
-            d3.select(this)
-                .attr('y1', y(horizontalLineY))
-                .attr('y2', y(horizontalLineY))
-            topLeftRect.attr('height', y(horizontalLineY) - marginTop )
-            botLeftRect
-                .attr('y', y(horizontalLineY))
-                .attr('height', height - marginBottom - y(horizontalLineY))
-            topRightRect
-                .attr('height', y(horizontalLineY) - marginTop)
-            botRightRect
-                .attr('y', y(horizontalLineY))
-                .attr('height',height - marginBottom - y(horizontalLineY)) 
-        }));
 
     plotContainer.append(svg.node());
 
