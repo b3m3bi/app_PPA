@@ -93,9 +93,18 @@
             <div class="tab-container">
                 <div class="content-container">
 
-                    <div class="plot-container">
+                    <div class="network-full-container">
                         <h3>Red</h3>
-                        <div class="plot-network"></div>
+                        <label for="node-size-select">Tamaño nodos</label>
+                        <select name="node-size" id="node-size-select">
+                            <option value="directInfluence">Influencia directa</option>
+                            <option value="directDependance">Dependencia directa</option>
+                            <option value="indirectInfluence">Influencia indirecta</option>
+                            <option value="indirectDependance">Dependencia indirecta</option>
+                            <option value="totalInfluence" selected>Influencia total</option>
+                            <option value="totalDependance">Dependencia total</option>
+                        </select>
+                        <div class="network-container"></div>
                     </div>
 
                     <h2>Gráficas</h2>

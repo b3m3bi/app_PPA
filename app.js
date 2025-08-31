@@ -656,6 +656,7 @@ function renderPlots() {
     plotInfluence('direct', '.plot-direct-influence');
     plotInfluence('indirect', '.plot-indirect-influence');
     plotInfluence('total', '.plot-total-influence');
+    createNetwork(nodeData, linkData, '.network-container');
 
 }
 
@@ -706,3 +707,137 @@ closeBnt.addEventListener('click', () => {
     definitionFormModal.style.display = 'none';
 })
 
+
+function createNetwork(nodeData, linkData, networkContainerId){
+    const nodeSizeSelect = document.querySelector('#node-size-select')
+
+    nodeSizeSelect.addEventListener('change', () => {
+        createNetwork(nodeData, linkData, '.network-container')
+    })
+
+    const networkContainer = document.querySelector(networkContainerId)
+
+    networkContainer.innerHTML = '';
+
+    const nodeSizeCriteria = nodeSizeSelect.value
+    const width = 400;
+    const height = 300;
+
+    const nodes = getForcesData(nodeData);
+    const links = linkData.map( l => ({...l}));
+
+     // Create a simulation with several forces.
+    const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.code))
+        .force('charge', d3.forceManyBody())
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .on('tick', ticked);
+
+    // Create the SVG container.
+    const svg = d3.create('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('viewBox', [0, 0, width, height])
+        .attr('style', 'max-width: 100%; height: auto;');
+
+    //Add a line for each link, and a circle for each node.
+    const link = svg.append("g")
+            .attr('stroke', '#999')
+            .attr('stroke-opacity', 0.6)
+            .selectAll()
+            .data(links)
+            .join('line')
+            .attr('stroke-width', d => Math.sqrt(d.weight));
+
+    const node = svg.append('g')
+            .attr('stroke', '#fff')
+            .attr('stroke-width', 1.5)
+            .selectAll()
+            .data(nodes)
+            .join('circle')
+            .attr('r', d =>  2 + (d[nodeSizeCriteria] / (d3.max(nodes, n => n[nodeSizeCriteria]))) * 10)
+            //.attr("fill", d => color(d.group));
+
+    node.append('title')
+        .text(d => d.code);
+
+    // Add a drag behavior.
+    node.call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended));
+
+    // Set the position attributes of links and nodes each time the simulation ticks.
+    function ticked() {
+        link
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+        node
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y);
+    }
+
+    // Reheat the simulation when drag starts, and fix the subject position.
+    function dragstarted(event) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+    }
+
+    // Update the subject (dragged node) position during drag.
+    function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+    }
+
+    // Restore the target alpha so the simulation cools after dragging ends.
+    // Unfix the subject position now that it’s no longer being dragged.
+    function dragended(event) {
+        if (!event.active) simulation.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
+    }
+
+    networkContainer.append(svg.node());
+
+}
+
+
+function getForcesData(nodeData){
+    
+    const influenceMatrix = getAdjMatrix(linkData, nodeData);
+
+    let forcesCodes = nodeData.map(n => n.code);
+    let forcesNames = nodeData.map(n => n.factor);
+
+    let forces = []
+
+    let directInfluence = getInfluenceWeighted(influenceMatrix);
+    let directDependance = getDependanceWeighted(influenceMatrix);
+
+    let sqrInfluenceMatrix = matrixMultiplication(influenceMatrix, influenceMatrix);
+    let indirectInfluence = getInfluenceWeighted(sqrInfluenceMatrix);
+    let indirectDependance = getDependanceWeighted(sqrInfluenceMatrix);
+
+    let totalInfluenceMatrix = matrixSum(influenceMatrix, sqrInfluenceMatrix);
+    let totalInfluence = getInfluenceWeighted(totalInfluenceMatrix);
+    let totalDependance = getDependanceWeighted(totalInfluenceMatrix);
+
+    for (let i = 0; i < influenceMatrix.length; i++){
+        let force = new Object();
+        force.directInfluence = directInfluence[i];
+        force.directDependance = directDependance[i];
+        force.indirectInfluence = indirectInfluence[i];
+        force.indirectDependance = indirectDependance[i];
+        force.totalInfluence = totalInfluence[i];
+        force.totalDependance = totalDependance[i];
+        force.code = forcesCodes[i];
+        force.name = forcesNames[i];
+        forces.push(force);
+    }
+
+    return forces;
+
+}
