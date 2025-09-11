@@ -629,7 +629,7 @@ function plotForces(forces, plotContainer, plotUID) {
         let pos = d3.select(this).node().getBoundingClientRect();
         d3.selectAll('.point')
             .attr('opacity', '0.2');
-        d3.selectAll(`.${d.code.replace(/\s+/g, "-")}`)
+        d3.selectAll(`.${d.code.replace(/\s+/g, "-")}.point`)
             .attr('opacity', '1');
 
         tooltip
@@ -737,7 +737,7 @@ function createNetwork(nodeData, linkData, networkContainerId){
         .selectAll('line')
         .data(links)
         .join('line')
-        .attr('class', l => `nw-links ${l.source.replace(/\s+/g, '-')} ${l.target.replace(/\s+/g, '-')}`)
+        .attr('class', l => `nw-link ${l.source.replace(/\s+/g, '-')} ${l.target.replace(/\s+/g, '-')}`)
         .attr('stroke-width', d => Math.sqrt(d.weight));
 
 
@@ -757,13 +757,13 @@ function createNetwork(nodeData, linkData, networkContainerId){
         .style('stroke-width', 2)
         .style('stroke-opacity', 0.2)
     
-    const labelFontSize = '14px'
+    const labelFontSize = '15px'
     node.append('text')
         .text(d => d.code)
         .attr('dy', d => scaleRadius(d, nodeSizeCriteria) + 5 )
         .attr('class', 'nw-label')
         .style('font-size', labelFontSize)
-        .style('font-weight', '300')
+        .style('font-weight', '400')
         .style('pointer-events', 'none')
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle' )
@@ -778,16 +778,16 @@ function createNetwork(nodeData, linkData, networkContainerId){
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle' )
         .attr('stroke', 'white')
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 5)
         .attr('fill', 'none');
     
 
     node.on('mouseover', function(e, d) {
         d3.selectAll('.nw-node')
             .style('opacity', 0.2)
-        d3.selectAll('.nw-links')
+        d3.selectAll('.nw-link')
             .style('opacity', 0)
-        d3.selectAll(`.${d.code.replace(/\s+/g, '-')}`)
+        d3.selectAll(`.${d.code.replace(/\s+/g, '-')}.nw-node, .${d.code.replace(/\s+/g, '-')}.nw-link`)
             .style('opacity', 1)
         d3.select(this).select('circle')
             .style('stroke', '#EB5E28')
@@ -798,7 +798,7 @@ function createNetwork(nodeData, linkData, networkContainerId){
         d3.selectAll('.nw-node')
             .style('opacity', 1)
             .style('stroke-opacity', 1)
-        d3.selectAll('.nw-links')
+        d3.selectAll('.nw-link')
             .style('opacity', 1)
         d3.select(this).select('circle')
             .style('stroke', 'black')
