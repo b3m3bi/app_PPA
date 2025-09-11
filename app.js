@@ -725,10 +725,11 @@ function createNetwork(nodeData, linkData, networkContainerId){
 
     // Create SVG
     const svg = d3.create('svg')
-        .attr('width', width)
-        .attr('height', height)
         .attr('viewBox', [0, 0, width, height])
-        .attr('style', 'max-width: 100%; height: auto;');
+        .attr('style', 'max-width: 100%; height: auto;')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .style('width', '100%')
+        .style('height', 'auto');
 
     // Links
     const link = svg.append('g')
@@ -778,7 +779,7 @@ function createNetwork(nodeData, linkData, networkContainerId){
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle' )
         .attr('stroke', 'white')
-        .attr('stroke-width', 5)
+        .attr('stroke-width', 3)
         .attr('fill', 'none');
     
 
@@ -834,7 +835,7 @@ function createNetwork(nodeData, linkData, networkContainerId){
     // Scale function
     function scaleRadius(d, criterio) {
         const maxVal = d3.max(nodes, n => n[criterio]);
-        return 3 + (d[criterio] / maxVal) * 30;
+        return 3 + (d[criterio] / maxVal) * 20;
     }
 
     function scaleColor(d, criterio) {
