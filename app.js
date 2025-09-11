@@ -601,7 +601,7 @@ function plotForces(forces, plotContainer, plotUID) {
         .data(forces)
         .enter()
         .append('g')
-        .attr('class', d => d.code.replace(/\s+/g, "-"))
+        .attr('class', d => d.code.replace(/\s+/g, '-'))
         .classed('point', true)
     
     point.append('circle')
@@ -707,67 +707,120 @@ closeBnt.addEventListener('click', () => {
     definitionFormModal.style.display = 'none';
 })
 
-
 function createNetwork(nodeData, linkData, networkContainerId){
-    const nodeSizeSelect = document.querySelector('#node-size-select')
+    const nodeSizeSelect = document.querySelector('#node-size-select');
+    let nodeSizeCriteria = nodeSizeSelect.value;
 
-    nodeSizeSelect.addEventListener('change', () => {
-        createNetwork(nodeData, linkData, '.network-container')
-    })
+    const nodeColorSelect = document.querySelector('#node-color-select');
+    let nodeColorCriteria = nodeColorSelect.value;
 
-    const networkContainer = document.querySelector(networkContainerId)
+    const networkContainer = document.querySelector(networkContainerId);
 
-    networkContainer.innerHTML = '';
-
-    const nodeSizeCriteria = nodeSizeSelect.value
-    const width = 400;
-    const height = 300;
+    const width = 700;
+    const height = 700;
 
     const nodes = getForcesData(nodeData);
-    const links = linkData.map( l => ({...l}));
+    const links = linkData.map(l => ({...l}));
 
-     // Create a simulation with several forces.
-    const simulation = d3.forceSimulation(nodes)
-        .force('link', d3.forceLink(links).id(d => d.code))
-        .force('charge', d3.forceManyBody())
-        .force('center', d3.forceCenter(width / 2, height / 2))
-        .on('tick', ticked);
 
-    // Create the SVG container.
+    // Create SVG
     const svg = d3.create('svg')
         .attr('width', width)
         .attr('height', height)
         .attr('viewBox', [0, 0, width, height])
         .attr('style', 'max-width: 100%; height: auto;');
 
-    //Add a line for each link, and a circle for each node.
-    const link = svg.append("g")
-            .attr('stroke', '#999')
-            .attr('stroke-opacity', 0.6)
-            .selectAll()
-            .data(links)
-            .join('line')
-            .attr('stroke-width', d => Math.sqrt(d.weight));
+    // Links
+    const link = svg.append('g')
+        .attr('stroke', '#999')
+        .attr('stroke-opacity', 0.6)
+        .selectAll('line')
+        .data(links)
+        .join('line')
+        .attr('class', l => `nw-links ${l.source.replace(/\s+/g, '-')} ${l.target.replace(/\s+/g, '-')}`)
+        .attr('stroke-width', d => Math.sqrt(d.weight));
 
+
+    // Nodes
     const node = svg.append('g')
-            .attr('stroke', '#fff')
-            .attr('stroke-width', 1.5)
-            .selectAll()
-            .data(nodes)
-            .join('circle')
-            .attr('r', d =>  2 + (d[nodeSizeCriteria] / (d3.max(nodes, n => n[nodeSizeCriteria]))) * 10)
-            //.attr("fill", d => color(d.group));
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', d => `nw-node ${d.code.replace(/\s+/g, '-')} ${getNeighborsCode(linkData, d.code).join(' ')}`)
 
-    node.append('title')
-        .text(d => d.code);
+    node.append('circle')
+        .attr('r', d => scaleRadius(d, nodeSizeCriteria))
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5)
+        .style('fill', d => scaleColor(d, nodeColorCriteria))
+        .style('stroke', 'black')
+        .style('stroke-width', 2)
+        .style('stroke-opacity', 0.2)
+    
+    const labelFontSize = '14px'
+    node.append('text')
+        .text(d => d.code)
+        .attr('dy', d => scaleRadius(d, nodeSizeCriteria) + 5 )
+        .attr('class', 'nw-label')
+        .style('font-size', labelFontSize)
+        .style('font-weight', '300')
+        .style('pointer-events', 'none')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle' )
+        .style('fill', 'black')
 
-    // Add a drag behavior.
+    node.insert('text', 'text')
+        .text(d => d.code)
+        .attr('dy', d => scaleRadius(d, nodeSizeCriteria) + 5 )
+        .attr('class', 'nw-label')
+        .style('font-size', labelFontSize)
+        .style('pointer-events', 'none')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle' )
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none');
+    
+
+    node.on('mouseover', function(e, d) {
+        d3.selectAll('.nw-node')
+            .style('opacity', 0.2)
+        d3.selectAll('.nw-links')
+            .style('opacity', 0)
+        d3.selectAll(`.${d.code.replace(/\s+/g, '-')}`)
+            .style('opacity', 1)
+        d3.select(this).select('circle')
+            .style('stroke', '#EB5E28')
+            .style('stroke-width', 4)
+            .style('stroke-opacity', 0.5)
+    })
+    node.on('mouseout', function(e, d){
+        d3.selectAll('.nw-node')
+            .style('opacity', 1)
+            .style('stroke-opacity', 1)
+        d3.selectAll('.nw-links')
+            .style('opacity', 1)
+        d3.select(this).select('circle')
+            .style('stroke', 'black')
+            .style('stroke-width', 2)
+            .style('stroke-opacity', 0.2)
+    })
+
+    // Create the simulation
+    const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.code))
+        .force('charge', d3.forceManyBody().strength(-600))
+        .force('collision', d3.forceCollide().radius(d => scaleRadius(d, nodeSizeCriteria) + 15))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .on('tick', ticked);
+
+    // Drag
     node.call(d3.drag()
         .on('start', dragstarted)
         .on('drag', dragged)
         .on('end', dragended));
 
-    // Set the position attributes of links and nodes each time the simulation ticks.
+    // Tick
     function ticked() {
         link
             .attr('x1', d => d.source.x)
@@ -775,33 +828,65 @@ function createNetwork(nodeData, linkData, networkContainerId){
             .attr('x2', d => d.target.x)
             .attr('y2', d => d.target.y);
         node
-            .attr('cx', d => d.x)
-            .attr('cy', d => d.y);
+            .attr('transform', d => `translate(${d.x},${d.y})`)
     }
 
-    // Reheat the simulation when drag starts, and fix the subject position.
+    // Scale function
+    function scaleRadius(d, criterio) {
+        const maxVal = d3.max(nodes, n => n[criterio]);
+        return 3 + (d[criterio] / maxVal) * 30;
+    }
+
+    function scaleColor(d, criterio) {
+        const maxVal = d3.max(nodes, n => n[criterio]);
+        const colorScale = d3.scaleSequential(['white', 'black',]).domain([0, maxVal])
+        return colorScale(d[criterio])
+    }
+
+    nodeSizeSelect.addEventListener('change', () => {
+        nodeSizeCriteria = nodeSizeSelect.value;
+
+        node.select('circle')
+            .transition()
+            .duration(500)
+            .attr('r', d => scaleRadius(d, nodeSizeCriteria))
+        
+        node.selectAll('.nw-label')
+            .transition()
+            .duration(500)
+            .attr('dy', d => scaleRadius(d, nodeSizeCriteria) + 5 )
+
+        simulation.force('collision', d3.forceCollide().radius(d => scaleRadius(d, nodeSizeCriteria) + 15)
+        )
+    });
+
+    nodeColorSelect.addEventListener('change', () => {
+        nodeColorCriteria = nodeColorSelect.value;
+
+        node.select('circle')
+            .transition()
+            .duration(500)
+            .style('fill', d => scaleColor(d, nodeColorCriteria));
+    });
+
+    // Drag functions
     function dragstarted(event) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
     }
-
-    // Update the subject (dragged node) position during drag.
     function dragged(event) {
         event.subject.fx = event.x;
         event.subject.fy = event.y;
     }
-
-    // Restore the target alpha so the simulation cools after dragging ends.
-    // Unfix the subject position now that it’s no longer being dragged.
     function dragended(event) {
         if (!event.active) simulation.alphaTarget(0);
         event.subject.fx = null;
         event.subject.fy = null;
     }
 
+    networkContainer.innerHTML = '';
     networkContainer.append(svg.node());
-
 }
 
 
@@ -840,4 +925,15 @@ function getForcesData(nodeData){
 
     return forces;
 
+}
+
+function getNeighborsCode(linkData, code){
+    let nieghborsIn = linkData
+        .filter(link => link.target === code)
+        .map(link => link.source)
+    let nieghborsOut = linkData
+        .filter(link => link.source === code)
+        .map(link => link.target)
+    let nieghbors = nieghborsIn.concat(nieghborsOut).map(n => n.replace(/\s+/g, '-'));
+    return nieghbors;
 }
