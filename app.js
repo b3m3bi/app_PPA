@@ -938,3 +938,47 @@ function getNeighborsCode(linkData, code){
     let nieghbors = nieghborsIn.concat(nieghborsOut).map(n => n.replace(/\s+/g, '-'));
     return nieghbors;
 }
+
+
+
+///
+
+const titleInput = document.querySelector('#project-title');
+
+let projectName = undefined;
+
+titleInput.addEventListener('input', () => {
+    projectName = titleInput.value;
+    console.log(projectName);
+})
+
+let project = {}
+
+function saveProjectAsJSON(){
+    const project = {
+        projectName: projectName,
+        nodeData: nodeData,
+        linkData: linkData
+    }
+
+    const filename = projectName ? `PPA-${projectName.replace(/\s+/g, '-')}.json` : `PPA-proyecto-sin-nombre.json`;
+    const jsonStr = JSON.stringify(project, (key, value) => value === undefined ? null : value, 2);
+
+    const blob = new Blob([jsonStr], {type: 'application/json;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    
+    const downloadElement = document.createElement('a');
+    downloadElement.href = url;
+    downloadElement.download = filename;
+    document.body.appendChild(downloadElement);
+    downloadElement.click();
+
+    document.body.removeChild(downloadElement);
+    URL.revokeObjectURL(url);
+}
+
+const exportBtn = document.querySelector('#export-btn');
+
+exportBtn.addEventListener('click', () => {
+    saveProjectAsJSON();
+})

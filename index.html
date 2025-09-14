@@ -18,11 +18,21 @@
     <input type="radio" id="tab2" name="tabselect">
     <input type="radio" id="tab3" name="tabselect">
     <nav>
-        <ul>
-            <li class="tab1"><label for="tab1">Definiciones</label></li>
-            <li class="tab2"><label for="tab2">Influencias</label></li>
-            <li class="tab3"><label for="tab3">Análisis</label></li>
-        </ul>
+        <div class="nav-content">
+            <div class="project-title-container">
+                <input id="project-title" type="text" placeholder="Nombre del proyecto...">
+            </div>
+            <ul>
+                <li class="tab1"><label for="tab1">Definiciones</label></li>
+                <li class="tab2"><label for="tab2">Influencias</label></li>
+                <li class="tab3"><label for="tab3">Análisis</label></li>
+            </ul>
+            <div class="project-options-container">
+                <button type="button" class="btn-options" id="export-btn">Exportar proyecto</button>
+                <button type="button" class="btn-options" id="load-btn">Cargar proyecto</button>
+                <button type="button" class="btn-options" id="load-btn">Crear nuevo proyecto</button>
+            </div>
+        </div>
     </nav>
     <main>
         <div class="tab1">
