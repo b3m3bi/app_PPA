@@ -477,11 +477,11 @@ function plotForces(forces, plotContainer, plotUID) {
         return svg.append('rect')
         .attr('x', x)
         .attr('y', y)
+        .attr('id', `${id}-${plotUID}`)
         .attr('width', width)
         .attr('height', height)
         .attr('fill', fill)
-        .attr('opacity', 0.2)
-        .attr('id', `${id}-${plotUID}`)
+        .style('opacity', 0.2)
         .classed(`rect ${id} ${plotUID}`, true)
         .lower()
     }
@@ -628,9 +628,9 @@ function plotForces(forces, plotContainer, plotUID) {
         // position tooltips in fix site https://stackoverflow.com/a/60472429
         let pos = d3.select(this).node().getBoundingClientRect();
         d3.selectAll('.point')
-            .attr('opacity', '0.2');
+            .style('opacity',  0.2);
         d3.selectAll(`.${d.code.replace(/\s+/g, "-")}.point`)
-            .attr('opacity', '1');
+            .style('opacity', 1);
 
         tooltip
             .style('opacity', 1)
@@ -642,7 +642,7 @@ function plotForces(forces, plotContainer, plotUID) {
     })
     .on('mouseout', function (e, d) {
         d3.selectAll('.point')
-            .attr('opacity', 1)
+            .style('opacity', 1)
         tooltip
             .style('opacity', 0)
     })

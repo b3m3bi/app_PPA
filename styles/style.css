@@ -72,21 +72,16 @@ nav {
 
 .nav-content {
     display: grid;
-    grid-template-columns: 2;
-    width: fit-content;
-    margin: auto;
-    gap: 8px;
-
-    /* display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; */
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .nav-content > ul {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    justify-self: center;
     gap: 8px;
 
     background-color: var(--col-light-second);
@@ -96,21 +91,28 @@ nav {
 }
 
 .project-title-container {
-    width: 100;
     display: flex;
-    justify-content: center;
+    justify-self: start;
 }
 
 .project-title-container > input {
-    font-size: 1.5rem;
-    width: 100%;
+    width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--col-dark-second);
 }
+
+.project-title-container > input:focus {
+    color: var(--col-dark-main)
+}
+
 
 .project-options-container{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-self: end;
 }
 
 
@@ -167,7 +169,7 @@ main {
     background-color: var(--col-light-main);
     border-radius: 16px;
     box-shadow: 0 0 5px var(--col-light-shadow);
-    width: min(1400px, calc(100vw - 24px));
+    width: min(1400px, calc(100vw - 16px));
 }
 
 .content-container{
@@ -475,7 +477,11 @@ textarea {
     margin-top: 0;
 }
 
-#new-definition-btn {
+#new-definition-btn, 
+#export-btn,
+#load-btn,
+#new-btn
+{
     color: var(--col-dark-second);
     background-color: var(--col-light-main);
     font-weight: 600;
@@ -486,12 +492,20 @@ textarea {
     gap: 4px;
 }
 
-#new-definition-btn:hover {
+#new-definition-btn:hover, 
+#export-btn:hover,
+#load-btn:hover,
+#new-btn:hover
+{
     color: var(--col-highlight-main);
     cursor: pointer;
 }
 
-#new-definition-btn svg {
+#new-definition-btn svg, 
+#export-btn svg, 
+#load-btn svg,
+#new-btn svg
+{
     height: 1.5rem;
 }
 
