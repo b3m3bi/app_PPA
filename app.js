@@ -260,6 +260,8 @@ function getIndexInNodeData(code, nodeData){
 
 function getAdjMatrix(linkData, nodeData){
 
+    if (!linkData || !nodeData) return undefined; 
+
     let adjMatrix = getZeroFilledMatrix(nodeData.length, nodeData.length);
     for(let link of linkData){
         let sourceIndex = getIndexInNodeData(link.source, nodeData);
@@ -276,6 +278,7 @@ function renderTables(){
 
 ///// Plots
 function sumMatrixRows(mat){
+    if (!mat || mat.length === 0) return undefined;
     let rowSums = [];
     for(let row of mat){
         rowSums.push(row.reduce((sum, val) => sum += val, 0));
@@ -284,6 +287,7 @@ function sumMatrixRows(mat){
 }
 
 function sumMatrixColumns(mat){
+    if (!mat || mat.length === 0) return undefined;
     let colSums = Array(mat.length)
     colSums.fill(0, 0, mat.length);
     for(let row of mat){
@@ -295,6 +299,9 @@ function sumMatrixColumns(mat){
 }
 
 function matrixMultiplication(A, B){
+
+    if (!A || !B || A.length === 0 || B.length === 0 ) return undefined;
+
     let rowsA = A.length;
     let colsA = A[0].length;
     let rowsB = B.length;
@@ -323,6 +330,7 @@ function matrixMultiplication(A, B){
 }
 
 function matrixSum(A, B){
+    if (!A || !B || A.length === 0 || B.length === 0) return undefined;
     let rows = A.length;
     let cols = A[0].length;
     let C = getZeroFilledMatrix(rows, cols);
@@ -335,6 +343,7 @@ function matrixSum(A, B){
 }
 
 function getInfluenceWeighted(influenceMatrix){
+    if (!influenceMatrix || influenceMatrix.length === 0) return undefined;
     const influence = sumMatrixRows(influenceMatrix);
     let influenceSum = influence.reduce((sum, val) => sum += val, 0);
     let numberOfNonZeroInfluenceForces = influence.filter(val => val > 0).length;
@@ -342,6 +351,7 @@ function getInfluenceWeighted(influenceMatrix){
 }
 
 function getDependanceWeighted(influenceMatrix){
+    if (!influenceMatrix || influenceMatrix.length === 0) return undefined;
     const dependance = sumMatrixColumns(influenceMatrix);
     let dependanceSum = dependance.reduce((sum, val) => sum += val, 0);
     let numberOfNonZeroDependanceForces = dependance.filter(val => val > 0).length;
@@ -444,6 +454,11 @@ function plotForces(forces, plotContainer, plotUID) {
             .text('Influencia')
         );
 
+    if (!forces || forces.length === 0) {
+        plotContainer.append(svg.node());
+        return;
+    };
+        
     let verticalLineX = 1;
     let horizontalLineY = 1;
 
@@ -982,3 +997,20 @@ const exportBtn = document.querySelector('#export-btn');
 exportBtn.addEventListener('click', () => {
     saveProjectAsJSON();
 })
+
+
+const newProjectBtn = document.querySelector('#new-btn');
+
+newProjectBtn.addEventListener('click', () => {
+    createNewProject();
+})
+
+function createNewProject(){
+
+    nodeData = [];
+    linkData = [];
+    projectName = undefined;
+
+    renderTables();
+    renderPlots();
+}
