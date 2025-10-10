@@ -123,6 +123,9 @@ main {
     background-color: var(--col-light-second);
 }
 
+.hidden {
+    display: none;
+}
 
 /* @media (max-width: 600px) {
     #definition-table thead{

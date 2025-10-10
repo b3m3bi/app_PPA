@@ -964,7 +964,6 @@ let projectName = undefined;
 
 titleInput.addEventListener('input', () => {
     projectName = titleInput.value;
-    console.log(projectName);
 })
 
 let project = {}
@@ -1013,4 +1012,39 @@ function createNewProject(){
 
     renderTables();
     renderPlots();
+    updateProjectTitle();
+}
+
+
+const inputFile = document.querySelector('#input-file');
+const loadBtn = document.querySelector('#load-btn');
+
+loadBtn.addEventListener('click', (event) => {
+    inputFile.click(event);
+})
+
+inputFile.addEventListener('change', function (){
+
+    let file = inputFile.files[0];
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = () => {
+        let projectData = JSON.parse(reader.result);
+        projectName = projectData.projectName;
+        nodeData = projectData.nodeData;
+        linkData = projectData.linkData;
+
+        renderTables();
+        renderPlots();
+        updateProjectTitle();
+    }
+    reader.onerror = () => {
+        alert(`Error reading file: ${reader.error}`);
+    }
+   
+});
+
+function updateProjectTitle(){
+    let titleText = projectName ? projectName : ""
+    titleInput.value = titleText;
 }
